@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Inventory</h2>
+
+        <!-- Add Item Button -->
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal">
+            Add New Item
+        </button>
+
+        <!-- Inventory Table with DataTables -->
+        <table id="inventoryTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Total Quantity</th>
+                    <th>Available Quantity</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.item_name }}</td>
+                        <td>{{ item.total_quantity }}</td>
+                        <td>{{ item.available_quantity }}</td> <!-- Call method with () -->
+                        <td>
+                            <!-- Edit and delete options -->
+                            <a href="{% url 'edit_inventory_item' item.id %}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="{% url 'delete_inventory_item' item.id %}" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for Adding Items -->
+    <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addItemModalLabel">Add New Inventory Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Add Item</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DataTables Initialization Script -->
+    <script>
+        $(document).ready(function() {
+            $('#inventoryTable').DataTable();
+        });
+    </script>
+
+    
+{% endblock %}

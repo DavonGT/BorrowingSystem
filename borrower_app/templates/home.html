@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <div class="container mt-4">
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css' %}">
+        <script src="{% static 'jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Borrow</button>
+        </form>
+
+        <script>
+            $(document).ready(function() {
+                // jQuery UI Autocomplete for item_name field
+                $("#id_item_name").autocomplete({
+                    source: function(request, response) {
+                        $.ajax({
+                            url: "{% url 'get_item_names' %}",
+                            dataType: "json",
+                            success: function(data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    minLength: 2  // Start suggesting after typing 2 characters
+                });
+            });
+        </script>
+    </div>
+{% endblock %}
