@@ -128,4 +128,4 @@ LOGIN_REDIRECT_URL = '/'
 
 # settings.py
 LOGIN_URL = '/login/'  # This should match your login URL
-    
+
