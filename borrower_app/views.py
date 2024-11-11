@@ -5,8 +5,11 @@ from django.contrib import messages
 from .models import BorrowedItem, InventoryItem
 from .forms import BorrowItemForm, InventoryItemForm
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone 
+import subprocess
+import cv2
 
 # Register view
 def register(request):
@@ -135,4 +138,76 @@ def delete_inventory_item(request, item_id):
 def get_item_names(request):
     items = InventoryItem.objects.values_list('item_name', flat=True)
     return JsonResponse(list(items), safe=False)
+
+@csrf_exempt
+def scan_paper(request):
+    image_path = 'HTR/scannedImages/scanned_form.png'
+    with open(image_path, 'wb') as f:
+        is_scan = subprocess.run('scanimage --format=png --mode Color --resolution 600 --brightness 50 --contrast 50',
+                                 stdout=f, shell=True)
+        if is_scan.returncode != 0:
+
+             # Cropping the scanned image
+            image = cv2.imread(image_path)
+            h, w, _ = image.shape
+            image = image[:h // 2, :w // 2]
+            cv2.imwrite(image_path, image)
+
+        # Doing now the actual scanning
+            scan = subprocess.run(f'python3 HTR/ocr.py {image_path}', shell=True)
+            if scan.returncode == 0:
+                return HttpResponse('Scanned')
+            else:
+                return HttpResponse('Not Scanned')
+    
+    return HttpResponse('No Scanner Connected.')
+
+
+def read_txt_file(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.readlines() 
+        return [line.strip() for line in lines]
+    except FileNotFoundError:
+        print("Pota ka wara didi")
+        return None
+
+def borrower_form_view(request):
+    data = get_borrower_data()
+    forms = BorrowItemForm(initial=data)
+    return render(request, 'home.html',context={"form":forms})
+        
+
+
+def get_borrower_data():
+    file_path = "HTR/data/data.txt"
+    txt_data = read_txt_file(file_path)
+    print(txt_data)
+
+    if txt_data:
+        last_name = txt_data[0].title()
+        first_name = txt_data[1].title()
+        middle_name = txt_data[2].title()
+        item_name = txt_data[3].title()
+        item_quantity =int(txt_data[4])
+
+        borrower_data = {
+            'borrower_last_name': last_name,
+            'borrower_first_name': first_name,
+            'borrower_middle_name': middle_name,
+            'item_name': item_name,
+            'item_quantity': item_quantity,
+            'date_borrowed': txt_data[5] if len(txt_data) > 5 else '',
+        }
+    else:
+        borrower_data = {
+            'borrower_last_name': '',
+            'borrower_first_name': '',
+            'borrower_middle_name': '',
+            'item_name': '',
+            'item_quantity': 0,
+            'date_borrowed': '',
+        }
+
+    return borrower_data
 

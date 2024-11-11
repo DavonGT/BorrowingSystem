@@ -13,5 +13,7 @@ urlpatterns = [
     path('return_item/<int:item_id>/', views.return_item, name='return_item'),
     path('delete_item/<int:item_id>/', views.delete_item, name='delete_item'),
     path('get_item_names/', views.get_item_names, name='get_item_names'),  # new URL for item names
+    path('scan_paper/', views.scan_paper, name='scan_paper'),
+    path('borrower_form_view/', views.borrower_form_view, name='borrower_form_view'),
 
 ]

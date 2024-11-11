@@ -8,12 +8,19 @@
         <script src="{% static 'jquery/jquery.min.js' %}"></script>
         <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
 
-        <form method="POST">
+        <form method="POST" action="{% url 'home' %}">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Borrow</button>
         </form>
 
+        <form method="GET" action="{% url 'scan_paper' %}">
+            <button type="submit">Scan Paper</button>
+        </form>
+
+        <form method="GET" action="{% url 'borrower_form_view' %}">
+            <button type="submit">Submit</button>
+        </form>
         <script>
             $(document).ready(function() {
                 // jQuery UI Autocomplete for item_name field
