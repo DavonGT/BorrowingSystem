@@ -2,25 +2,43 @@
 
 
 {% block content %}
-    <div class="form-container mt-4">
+    <div class="container mt-4">
         {% load static %}
-        <link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css' %}">
-        <script src="{% static 'jquery/jquery.min.js' %}"></script>
-        <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
 
-        <form method="POST" action="{% url 'home' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Borrow</button>
-        </form>
+        
 
-        <form method="GET" action="{% url 'scan_paper' %}">
-            <button type="submit">Scan Paper</button>
-        </form>
+        <h2>Welcome to Borrowing System</h2>
+        <div class="form-container">
+            <!-- Add Item Button -->
+            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addBorrowModal">
+                Borrow an Item
+            </button>
 
-        <form method="GET" action="{% url 'borrower_form_view' %}">
-            <button type="submit">Submit</button>
-        </form>
+            <!-- Modal for Adding Items -->
+            <div class="modal fade" id="addBorrowModal" tabindex="-1" aria-labelledby="addBorrowModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addBorrowModalLabel">Borrow Item</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="{% url 'home' %}" class="form-borrower">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit" class="btn btn-primary">Add Item</button>
+                            </form>
+                            <form method="GET" action="{% url 'scan_paper' %}">
+                                <button type="submit">Scan Paper</button>
+                            </form>
+                
+                            <form method="GET" action="{% url 'borrower_form_view' %}">
+                                <button type="submit">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         <script>
             $(document).ready(function() {
                 // jQuery UI Autocomplete for item_name field
@@ -34,7 +52,7 @@
                             }
                         });
                     },
-                    minLength: 2  // Start suggesting after typing 2 characters
+                    minLength: 1  // Start suggesting after typing 2 characters
                 });
             });
         </script>
