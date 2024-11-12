@@ -1,5 +1,46 @@
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+    <title>Register</title>
+</head>
+<body>
+    <div class="main-container">
+        <div class="login-container">
+            <div class="left-box">
+                <div class="header-text">
+                    <h2>Register</h2>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="input-field-container">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            <div class="input-field">
+                                {{ field }}
+                            </div>
+                            {% for error in field.errors %}
+                                <div class="error-message">
+                                    <span class="error-icon">⚠️</span>{{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="signup-btn">Register</button>
+                    <a href="{% url 'login' %}" class="cancel-btn">Cancel</a>
+                </form>
+            </div>
+            <div class="right-box">
+                <div class="featured-image">
+                    <img src="{% static 'images/essu_logo.jpg' %}" class="img-fluid">
+                </div>
+                <div class="borrower-text">Join Us Today</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

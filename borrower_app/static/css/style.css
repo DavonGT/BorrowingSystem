@@ -1,0 +1,271 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: white;
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #f8fff6;
+    height: 60px; /* Reduced the height */
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 15px; /* Reduced the padding */
+    border-bottom: 2px solid green;
+}
+
+.navbar .logo {
+    height: 40px;
+    width: 40px;
+    position: fixed;
+    left: 15px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 15px;
+    margin-left: 600px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 16px; /* Reduced font size */
+    padding: 6px 10px; /* Reduced padding */
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+    margin-top: 5px;
+}
+
+.nav-links .nav-hover:hover {
+    color: #edfbe9;
+    background-color: #124703;
+}
+
+.nav-links .nav-active {
+    color: #e1ede0;
+    background-color: #175813;
+}
+
+.heading {
+    font-size: 22px; /* Reduced heading font size */
+    font-weight: bold;
+    margin-left: 60px;
+    margin-top: 15px;
+}
+
+/* Adding some space below the navbar */
+.border {
+    margin-top: 70px;
+    height: 2px;
+    background-color: none;
+}
+
+
+/* CSS for data table*/
+
+.container {
+    margin-top: 30px;
+}
+
+h2 {
+    margin-top: 12vh;
+    font-size: 30px;
+    font-weight: bold;
+    color: #124703;
+    margin-bottom: 20px;
+}
+
+#items-table {
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+#items-table thead {
+    background-color: #108a51;
+    color: white;
+}
+
+#items-table th {
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+#items-table td {
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+}
+
+#items-table tbody tr:nth-child(odd) {
+    background-color: #f7f7f7;
+}
+
+#items-table tbody tr:hover {
+    background-color: #f4fff5;
+}
+
+.dataTables_filter {
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.dataTables_filter input {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.btn {
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-sm {
+    font-size: 13px;
+    padding: 5px 10px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  CCS for Inventory */
+
+
+.section-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #124703;
+    margin-bottom: 20px;
+}
+
+
+.btn-primary {
+    background-color: #124703;
+    border-color: #124703;
+    font-size: 16px;
+    padding: 8px 15px;
+}
+
+.btn-primary:hover {
+    background-color: #106b2f;
+    border-color: #106b2f;
+}
+
+
+#inventoryTable {
+    width: 100%;
+    margin-top: 30px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+#inventoryTable thead {
+    background-color: #108a51;
+    color: white;
+}
+
+#inventoryTable th, #inventoryTable td {
+    text-align: left;
+    padding: 12px 15px;
+}
+
+#inventoryTable td {
+    font-size: 14px;
+}
+
+
+#inventoryTable tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+#inventoryTable tbody tr:hover {
+    background-color: #f4fff5;
+}
+
+
+.modal-header {
+    background-color: #124703;
+    color: white;
+    border-bottom: 2px solid #106b2f;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.btn-close {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+}
+
+/* Button Styling for Modal */
+.btn-primary {
+    background-color: #28a745;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+.btn-primary:hover {
+    background-color: #218838;
+}   
+
+
+
+
+
