@@ -34,7 +34,7 @@ body {
 .nav-links {
     display: flex;
     gap: 15px;
-    margin-left: 900px;
+    margin-left: 700px;
     position: fixed;
 }
 
@@ -251,57 +251,151 @@ h2 {
     background-color: #f4fff5;
 }
 
+.add-item-btn {
+    background-color: #108a51;
+    font-size: 16px;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    color: white;
 
-.modal-content{
-    margin-top: 100px;
 }
 
+  
+  /* Modal close button */
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #ffffff;
+  }
+  
+
+
+
+
+
+
+
+
+
+/* Modal Content Styling */
+.modal-content {
+    margin-top: 100px; /* Centers the modal vertically */
+    border-radius: 8px; /* Adds rounded corners */
+    overflow: hidden; /* Prevents overflow on rounded corners */
+    width: 600px;
+}
+
+/* Modal Header Styling */
 .modal-header {
     background-color: #124703;
     color: white;
+    padding: 15px; /* Adds padding for a more balanced look */
     border-bottom: 2px solid #106b2f;
 }
 
-.modal-body {
-    padding: 20px;
+.modal-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0; /* Removes default margin */
 }
 
+/* Close Button Styling */
 .btn-close {
     background-color: transparent;
     border: none;
     color: white;
     font-size: 24px;
+    cursor: pointer;
 }
 
-/* Button Styling for Modal */
-.btn-primary {
+.btn-close:hover {
+    color: #ccc; /* Changes color on hover for better UX */
+}
+
+
+.modal-body {
+    padding: 20px;
+}
+
+/* Button Styling within Modal */
+.borrow-btn {
     background-color: #28a745;
     border: none;
     padding: 10px 20px;
     font-size: 16px;
+    border-radius: 4px;
+    margin: 10px 10px;
+    color: white;
+
 }
 
-.btn-primary:hover {
+button.add-btn {
+    padding: 10px 20px;
+    background-color: #28a745;
+    border-radius: 4px;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+}
+
+.add-btn:hover {
     background-color: #218838;
-}   
-
-input[name="borrower_middle_name"]{
-    width: 100%;
 }
 
-input[name="borrower_last_name"] {
-    width: 100%;
-}
-
-input[name="borrower_first_name"] {
-    width: 100%;
-}
-
+/* Input Field Styling */
+input[name="borrower_middle_name"],
+input[name="borrower_last_name"],
+input[name="borrower_first_name"],
 input[name="item_quantity"] {
     width: 100%;
+    padding: 10px; /* Adds padding for better usability */
+    margin-top: 8px; /* Space between input fields */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Prevents padding from affecting width */
+    border: 2px solid gray;
 }
 
+.button-row {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    justify-content: center; /* Center the buttons horizontally */
+    margin-top: 10px; /* Space above the button row */
+}
 
+/* Individual Button Styling */
+button.scan-btn,
+button.submit-btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+}
 
+/* Different colors for each button */
+button.scan-btn {
+    background-color: #007bff;
+}
 
+button.scan-btn:hover {
+    background-color: #0056b3;
+}
 
+button.submit-btn {
+    background-color: #28a745;
+}
+
+button.submit-btn:hover {
+    background-color: #218838;
+}

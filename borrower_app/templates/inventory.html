@@ -5,7 +5,7 @@
         <h2>Inventory</h2>
 
         <!-- Add Item Button -->
-        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal">
+        <button type="button" class="add-item-btn mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal">
             Add New Item
         </button>
 
@@ -49,7 +49,7 @@
                     <form method="POST">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Add Item</button>
+                        <button type="submit" class="add-item-btn">Add Item</button>
                     </form>
                 </div>
             </div>
