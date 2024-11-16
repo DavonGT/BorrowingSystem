@@ -12,7 +12,10 @@ import subprocess
 import cv2
 
 # Register view
-def register(request):
+def register_view(request):
+    """
+    View for user registration.
+    """
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -20,19 +23,24 @@ def register(request):
             return redirect('login')
     else:
         form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    context = {'form': form}
+    return render(request, 'register.html', context)
 
 # Login view
 def login_view(request):
+    """
+    View for logging in users.
+    """
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
+        auth_form = AuthenticationForm(data=request.POST)
+        if auth_form.is_valid():
+            user = auth_form.get_user()
             login(request, user)
             return redirect('home')
     else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+        auth_form = AuthenticationForm()
+    context = {'form': auth_form}
+    return render(request, 'login.html', context)
 
 # Logout view
 def logout_view(request):
@@ -42,35 +50,34 @@ def logout_view(request):
 # Homepage view (protected)
 @login_required
 def home(request):
+    """
+    Homepage view, handles borrowing of items.
+    """
     if request.method == 'POST':
         form = BorrowItemForm(request.POST)
         if form.is_valid():
-            # Get the item name and quantity from the form
             item_name = form.cleaned_data['item_name']
             item_quantity = form.cleaned_data['item_quantity']
-            # Fetch the actual InventoryItem instance by name
             try:
                 inventory_item = InventoryItem.objects.get(item_name=item_name)
             except InventoryItem.DoesNotExist:
                 form.add_error('item_name', "This item does not exist in the inventory.")
                 return render(request, 'home.html', {'form': form})
 
-            # Check if requested quantity is available
             if item_quantity > inventory_item.available_quantity():
                 form.add_error(None, "Insufficient quantity available for borrowing.")
             else:
-                # Sufficient inventory, proceed with borrowing
                 borrowed_item = form.save(commit=False)
                 borrowed_item.borrower_name = request.user.username
-                borrowed_item.datenow = timezone.now()
+                borrowed_item.date_borrowed = timezone.now()
                 borrowed_item.save()
                 return redirect('home')
     else:
         form = BorrowItemForm()
 
-    # Get borrowed items for the current user
-    items = BorrowedItem.objects.filter(borrower_name=request.user.username)
-    return render(request, 'home.html', {'form': form, 'items': items})
+    borrowed_items = BorrowedItem.objects.filter(borrower_name=request.user.username)
+    context = {'form': form, 'borrowed_items': borrowed_items}
+    return render(request, 'home.html', context)
 
 
 # Return item view
@@ -172,6 +179,7 @@ def read_txt_file(file_path):
         print("Pota ka wara didi")
         return None
 
+
 def borrower_form_view(request):
     if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
         data = get_borrower_data()  # Existing function
@@ -181,7 +189,7 @@ def borrower_form_view(request):
     data = get_borrower_data()
     forms = BorrowItemForm(initial=data)
     return render(request, 'home.html', context={"form": forms})
-        
+
 
 
 def get_borrower_data():
