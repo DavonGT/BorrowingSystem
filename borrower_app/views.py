@@ -173,9 +173,14 @@ def read_txt_file(file_path):
         return None
 
 def borrower_form_view(request):
+    if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        data = get_borrower_data()  # Existing function
+        return JsonResponse(data)  # Return data as JSON
+
+    # Default behavior if accessed directly
     data = get_borrower_data()
     forms = BorrowItemForm(initial=data)
-    return render(request, 'home.html',context={"form":forms})
+    return render(request, 'home.html', context={"form": forms})
         
 
 
