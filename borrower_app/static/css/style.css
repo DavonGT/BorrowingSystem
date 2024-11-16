@@ -8,10 +8,29 @@ body {
     background: white;
 }
 
-/* Navbar Styling */
+
+
+
+h2 {
+    margin-top: 12vh;
+    font-size: 30px;
+    font-weight: bold;
+    color: #124703;
+    margin-bottom: 10px;
+}
+
+h4 {
+    margin-top: 10px;
+    font-size: 25px;
+    font-weight: bold;
+    color: #124703;
+    margin-bottom: 10px;
+}
+
+
 .navbar {
     background-color: #f8fff6;
-    height: 60px; /* Reduced the height */
+    height: 60px;
     width: 100%;
     position: fixed;
     top: 0;
@@ -19,7 +38,7 @@ body {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 0 15px; /* Reduced the padding */
+    padding: 0 15px;
     border-bottom: 2px solid green;
     z-index: 100000;
 }
@@ -42,8 +61,8 @@ body {
     text-decoration: none;
     color: #333;
     font-weight: bold;
-    font-size: 16px; /* Reduced font size */
-    padding: 6px 10px; /* Reduced padding */
+    font-size: 16px;
+    padding: 6px 10px;
     border-radius: 10px;
     transition: background-color 0.3s ease;
     margin-top: 5px;
@@ -60,13 +79,13 @@ body {
 }
 
 .heading {
-    font-size: 22px; /* Reduced heading font size */
+    font-size: 22px;
     font-weight: bold;
     margin-left: 60px;
     margin-top: 15px;
 }
 
-/* Adding some space below the navbar */
+
 .border {
     margin-top: 70px;
     height: 2px;
@@ -91,13 +110,7 @@ body {
 }
 
 
-h2 {
-    margin-top: 12vh;
-    font-size: 30px;
-    font-weight: bold;
-    color: #124703;
-    margin-bottom: 20px;
-}
+
 
 #items-table {
     width: 100%;
@@ -273,14 +286,6 @@ h2 {
     cursor: pointer;
     color: #ffffff;
   }
-  
-
-
-
-
-
-
-
 
 
 /* Modal Content Styling */
@@ -322,6 +327,60 @@ h2 {
 .modal-body {
     padding: 20px;
 }
+
+
+
+
+/*CSS for home */
+
+.upper-container {
+    margin: 0px 0px;
+    background-color: #f4f5f7;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-around;
+    gap: 23px;
+}
+.lower-container{
+    margin: 10px 0px;
+    background-color: #f4f5f7;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.box-container {
+    margin: 10px 0px;
+    background-color: ddd;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.text-header {
+    font-weight: bold;
+    font-size: 1em;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+
+.text-number {
+    margin-top: 15px;
+    margin-bottom: 0px;
+    font-size: 1.5em;
+    color: black;
+    font-weight: bold;
+    
+}
+
+
+
+
+/*CSS for home Modal*/
 
 /* Button Styling within Modal */
 .borrow-btn {

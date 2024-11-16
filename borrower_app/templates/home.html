@@ -3,12 +3,36 @@
 {% block content %}
 <div class="container mt-4">
     {% load static %}
-    <h2>Welcome to Borrowing System</h2>
+    <h2>Borrower's Dashboard</h2>
     <div class="form-container">
         <!-- Add Item Button -->
         <button type="button" class="borrow-btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addBorrowModal">
             Borrow an Item
         </button>
+
+        <div class="upper-container">
+            <div class="box-container">
+                <p class="text-header">Number of Borrower/s</p>
+                <p class="text-number">{{ total_borrowers }}</p>
+            </div>
+            <div class="box-container">
+                <p class="text-header">Total Borrowed Item/s</p>
+                <p class="text-number">{{ total_borrowed_items }}</p>
+            </div>
+            <div class="box-container">
+                <p class="text-header">Total Returned Item/s</p>
+                <p class="text-number">{{ total_returned_items }}</p>
+            </div>
+            <div class="box-container">
+                <p class="text-header">Most Borrowed Item</p>
+                <p class="text-number">None</p>
+            </div>
+        </div>
+        <div class="lower-container">
+            <h4>Items Unreturned for Too Long</h4>
+            <p class="text-header">Chair 40</p>
+        </div>
+        
 
         <!-- Modal for Adding Items -->
         <div class="modal fade" id="addBorrowModal" tabindex="-1" aria-labelledby="addBorrowModalLabel" aria-hidden="true">
