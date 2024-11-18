@@ -29,8 +29,16 @@
             </div>
         </div>
         <div class="lower-container">
-            <h4>Items Borrowed for too long</h4>
-            <p class="text-header">Chair 40</p>
+            <h4>Items Borrowed for Too Long</h4>
+            {% if overdue_items %}
+                <ul>
+                    {% for item in overdue_items %}
+                        <li>{{ item.item_name }} ({{ item.item_quantity }}) - Borrowed by ---"{{ item.borrower_last_name }}, {{ item.borrower_first_name }} {{item.borrower_middle_name}}"--- on "{{ item.datenow }}"</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No overdue items at the moment.</p>
+            {% endif %}
         </div>
         
 

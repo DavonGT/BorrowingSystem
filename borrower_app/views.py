@@ -16,11 +16,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import BorrowedItemSerializer, InventoryItemSerializer
+from datetime import timedelta
+
 
 @login_required
 def home(request):
     """
-    Homepage view, handles borrowing of items.
+    Homepage view, handles borrowing of items and overdue items display.
     """
     total_borrowers = BorrowedItem.objects.values(
         'borrower_first_name', 'borrower_last_name', 'borrower_middle_name'
@@ -28,6 +30,14 @@ def home(request):
 
     total_borrowed_items = BorrowedItem.objects.filter(status='borrowed').aggregate(Sum('item_quantity'))['item_quantity__sum'] or 0
     total_returned_items = BorrowedItem.objects.filter(status='returned').aggregate(Sum('item_quantity'))['item_quantity__sum'] or 0
+
+    # Overdue items logic
+    overdue_threshold = timedelta(days=1)
+    cutoff_date = timezone.now() - overdue_threshold
+    overdue_items = BorrowedItem.objects.filter(
+        borrow_date__lt=cutoff_date,  # Updated field name
+        status='borrowed'
+    )
 
     if request.method == 'POST':
         form = BorrowItemForm(request.POST)
@@ -40,26 +50,88 @@ def home(request):
                 form.add_error('item_name', "This item does not exist in the inventory.")
                 return render(request, 'home.html', {
                     'form': form, 'total_borrowers': total_borrowers,
-                    'total_borrowed_items': total_borrowed_items, 'total_returned_items': total_returned_items})
+                    'total_borrowed_items': total_borrowed_items, 'total_returned_items': total_returned_items,
+                    'overdue_items': overdue_items
+                })
 
             available_quantity = inventory_item.available_quantity()
             if item_quantity > available_quantity:
                 form.add_error(None, f"Only {available_quantity} item(s) available for borrowing.")
                 return render(request, 'home.html', {
                     'form': form, 'total_borrowers': total_borrowers,
-                    'total_borrowed_items': total_borrowed_items, 'total_returned_items': total_returned_items})
-            
+                    'total_borrowed_items': total_borrowed_items, 'total_returned_items': total_returned_items,
+                    'overdue_items': overdue_items
+                })
+
             borrowed_item = form.save(commit=False)
             borrowed_item.borrower_name = request.user.username
-            borrowed_item.date_borrowed = timezone.now()
+            borrowed_item.borrow_date = timezone.now()  # Updated field name
             borrowed_item.save()
             inventory_item.save()
-            
             return redirect('home')
     else:
         form = BorrowItemForm()
 
     borrowed_items = BorrowedItem.objects.filter(borrower_name=request.user.username)
+
+    context = {
+        'form': form,
+        'borrowed_items': borrowed_items,
+        'total_borrowers': total_borrowers,
+        'total_borrowed_items': total_borrowed_items,
+        'total_returned_items': total_returned_items,
+        'overdue_items': overdue_items,
+    }
+
+    return render(request, 'home.html', context)
+
+
+
+
+
+# @login_required
+# def home(request):
+#     """
+#     Homepage view, handles borrowing of items.
+#     """
+#     total_borrowers = BorrowedItem.objects.values(
+#         'borrower_first_name', 'borrower_last_name', 'borrower_middle_name'
+#     ).distinct().count()
+
+#     total_borrowed_items = BorrowedItem.objects.filter(status='borrowed').aggregate(Sum('item_quantity'))['item_quantity__sum'] or 0
+#     total_returned_items = BorrowedItem.objects.filter(status='returned').aggregate(Sum('item_quantity'))['item_quantity__sum'] or 0
+
+#     if request.method == 'POST':
+#         form = BorrowItemForm(request.POST)
+#         if form.is_valid():
+#             item_name = form.cleaned_data['item_name']
+#             item_quantity = form.cleaned_data['item_quantity']
+#             try:
+#                 inventory_item = InventoryItem.objects.get(item_name=item_name)
+#             except InventoryItem.DoesNotExist:
+#                 form.add_error('item_name', "This item does not exist in the inventory.")
+#                 return render(request, 'home.html', {
+#                     'form': form, 'total_borrowers': total_borrowers,
+#                     'total_borrowed_items': total_borrowed_items, 'total_returned_items': total_returned_items})
+
+#             available_quantity = inventory_item.available_quantity()
+#             if item_quantity > available_quantity:
+#                 form.add_error(None, f"Only {available_quantity} item(s) available for borrowing.")
+#                 return render(request, 'home.html', {
+#                     'form': form, 'total_borrowers': total_borrowers,
+#                     'total_borrowed_items': total_borrowed_items, 'total_returned_items': total_returned_items})
+            
+#             borrowed_item = form.save(commit=False)
+#             borrowed_item.borrower_name = request.user.username
+#             borrowed_item.date_borrowed = timezone.now()
+#             borrowed_item.save()
+#             inventory_item.save()
+            
+#             return redirect('home')
+#     else:
+#         form = BorrowItemForm()
+
+#     borrowed_items = BorrowedItem.objects.filter(borrower_name=request.user.username)
 
     context = {
         'form': form,
