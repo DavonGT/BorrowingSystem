@@ -4,10 +4,7 @@
     <div class="container mt-4">
         <h2>Inventory</h2>
 
-        <!-- Add Item Button -->
-        <button type="button" class="add-item-btn mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal">
-            Add New Item
-        </button>
+       
 
         <!-- Inventory Table with DataTables -->
         <table id="inventoryTable" class="display">
@@ -24,10 +21,17 @@
                     <tr>
                         <td>{{ item.item_name }}</td>
                         <td>{{ item.total_quantity }}</td>
-                        <td>{{ item.available_quantity }}</td> <!-- Call method with () -->
+                        <td>{{ item.available_quantity }}</td>
                         <td>
                             <!-- Edit and delete options -->
-                            <a href="{% url 'edit_inventory_item' item.id %}" class="btn btn-warning btn-sm">Edit</a>
+                            <button class="btn btn-warning btn-sm edit-btn" 
+                                    data-item-id="{{ item.id }}"
+                                    data-item-name="{{ item.item_name }}"
+                                    data-total-quantity="{{ item.total_quantity }}"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editItemModal">
+                                Edit
+                            </button>
                             <a href="{% url 'delete_inventory_item' item.id %}" class="btn btn-danger btn-sm"
                                onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
                         </td>
@@ -35,33 +39,125 @@
                 {% endfor %}
             </tbody>
         </table>
+        <br>
+         <!-- Add Item Button -->
+         <button type="button" class="add-item-btn mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal">
+            Add New Item
+        </button>
     </div>
+    
 
-    <!-- Modal for Adding Items -->
+    <!-- Add Item Modal -->
     <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addItemModalLabel">Add New Inventory Item</h5>
+                    <h5 class="modal-title" id="addItemModalLabel">Add New Item</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST">
+                    <div id="error-messages" class="alert alert-danger" style="display: none;"></div>
+                    <form id="addItemForm" method="POST" action="{% url 'inventory' %}">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit" class="add-item-btn">Add Item</button>
+                        <button type="submit" class="btn btn-primary">Add Item</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- DataTables Initialization Script -->
+    <!-- Edit Item Modal -->
+    <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editItemForm" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="edit_item_name" class="form-label">Item Name</label>
+                            <input type="text" class="form-control" id="edit_item_name" name="item_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_total_quantity" class="form-label">Total Quantity</label>
+                            <input type="number" class="form-control" id="edit_total_quantity" name="total_quantity" required min="0">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DataTables Initialization -->
     <script>
         $(document).ready(function() {
             $('#inventoryTable').DataTable();
+
+            // Handle edit button clicks
+            $('.edit-btn').click(function() {
+                var itemId = $(this).data('item-id');
+                var itemName = $(this).data('item-name');
+                var totalQuantity = $(this).data('total-quantity');
+
+                $('#edit_item_name').val(itemName);
+                $('#edit_total_quantity').val(totalQuantity);
+                $('#editItemForm').attr('action', '/inventory/edit/' + itemId + '/');
+            });
+
+            // Handle add item form submission
+            $('#addItemForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Refresh the page on success
+                        location.reload();
+                    } else {
+                        // Show error messages
+                        const errorDiv = $('#error-messages');
+                        errorDiv.html('');
+                        
+                        if (typeof data.errors === 'object') {
+                            // Handle field-specific errors
+                            Object.entries(data.errors).forEach(([field, errors]) => {
+                                errors.forEach(error => {
+                                    errorDiv.append(`<p>${field}: ${error}</p>`);
+                                });
+                            });
+                        } else if (Array.isArray(data.errors)) {
+                            // Handle general errors
+                            data.errors.forEach(error => {
+                                errorDiv.append(`<p>${error}</p>`);
+                            });
+                        } else {
+                            errorDiv.append('<p>An error occurred. Please try again.</p>');
+                        }
+                        
+                        errorDiv.show();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    $('#error-messages')
+                        .html('<p>An unexpected error occurred. Please try again.</p>')
+                        .show();
+                });
+            });
         });
     </script>
-
-    
 {% endblock %}
