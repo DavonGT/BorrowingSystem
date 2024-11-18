@@ -300,7 +300,7 @@ h4 {
     margin-top: 100px; /* Centers the modal vertically */
     border-radius: 8px; /* Adds rounded corners */
     overflow: hidden; /* Prevents overflow on rounded corners */
-    width: 600px;
+    width: 500px;
 }
 
 /* Modal Header Styling */
@@ -450,14 +450,25 @@ button.add-btn {
 input[name="borrower_middle_name"],
 input[name="borrower_last_name"],
 input[name="borrower_first_name"],
-input[name="item_quantity"] {
+input[name="item_quantity"],
+select[name="item_name"] {
     width: 100%;
-    padding: 10px; /* Adds padding for better usability */
-    margin-top: 8px; /* Space between input fields */
+    padding: 5px;
+    margin-top: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Prevents padding from affecting width */
-    border: 2px solid gray;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+input[name="borrower_middle_name"]:focus,
+input[name="borrower_last_name"]:focus,
+input[name="borrower_first_name"]:focus,
+input[name="item_quantity"]:focus,
+select[name="item_name"]:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
 }
 
 .button-row {
@@ -494,4 +505,28 @@ button.submit-btn {
 
 button.submit-btn:hover {
     background-color: #218838;
+}
+
+/* Label Styling */
+.form-borrower label {
+    font-size: 14px; /* Smaller font size */
+    font-weight: normal; /* Optional: Make the label lighter */
+    color: #555; /* Set the label color */
+    margin-bottom: 4px; /* Add spacing below the label */
+    display: block; /* Ensure the label appears above the input */
+    line-height: 1.2; /* Adjust line height for better readability */
+}
+
+/* Additional adjustment if using floating labels (MDBootstrap or similar) */
+.form-outline label {
+    font-size: 12px; /* Smaller floating label font */
+    color: #777; /* Change color for better contrast */
+}
+
+/* Adjust position of floating labels when active */
+.form-outline input:focus + label,
+.form-outline input:not(:placeholder-shown) + label {
+    font-size: 10px; /* Reduce label size when input is focused */
+    top: -10px; /* Adjust position when floating */
+    color: #007bff; /* Optional: Highlight active label */
 }
