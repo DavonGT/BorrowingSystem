@@ -172,9 +172,16 @@ def inventory_view(request):
         form = InventoryItemForm(request.POST)
         if form.is_valid():
             form.save()
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True})
             messages.success(request, "Item added to inventory.")
             return redirect('inventory')
         else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'errors': {field: errors for field, errors in form.errors.items()}
+                })
             messages.error(request, "Error adding item. Please check the form.")
     else:
         form = InventoryItemForm()

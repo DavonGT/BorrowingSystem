@@ -4,10 +4,7 @@
     <div class="container mt-4">
         <h2>Inventory</h2>
 
-        <!-- Add Item Button -->
-        <button type="button" class="add-item-btn mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal">
-            Add New Item
-        </button>
+       
 
         <!-- Inventory Table with DataTables -->
         <table id="inventoryTable" class="display">
@@ -42,7 +39,13 @@
                 {% endfor %}
             </tbody>
         </table>
+        <br>
+         <!-- Add Item Button -->
+         <button type="button" class="add-item-btn mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal">
+            Add New Item
+        </button>
     </div>
+    
 
     <!-- Add Item Modal -->
     <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
@@ -53,7 +56,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{% url 'inventory' %}">
+                    <div id="error-messages" class="alert alert-danger" style="display: none;"></div>
+                    <form id="addItemForm" method="POST" action="{% url 'inventory' %}">
                         {% csrf_token %}
                         {{ form.as_p }}
                         <button type="submit" class="btn btn-primary">Add Item</button>
@@ -100,12 +104,59 @@
                 var itemName = $(this).data('item-name');
                 var totalQuantity = $(this).data('total-quantity');
 
-                // Set form action URL
-                $('#editItemForm').attr('action', '/inventory/edit/' + itemId + '/');
-
-                // Populate form fields
                 $('#edit_item_name').val(itemName);
                 $('#edit_total_quantity').val(totalQuantity);
+                $('#editItemForm').attr('action', '/inventory/edit/' + itemId + '/');
+            });
+
+            // Handle add item form submission
+            $('#addItemForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Refresh the page on success
+                        location.reload();
+                    } else {
+                        // Show error messages
+                        const errorDiv = $('#error-messages');
+                        errorDiv.html('');
+                        
+                        if (typeof data.errors === 'object') {
+                            // Handle field-specific errors
+                            Object.entries(data.errors).forEach(([field, errors]) => {
+                                errors.forEach(error => {
+                                    errorDiv.append(`<p>${field}: ${error}</p>`);
+                                });
+                            });
+                        } else if (Array.isArray(data.errors)) {
+                            // Handle general errors
+                            data.errors.forEach(error => {
+                                errorDiv.append(`<p>${error}</p>`);
+                            });
+                        } else {
+                            errorDiv.append('<p>An error occurred. Please try again.</p>');
+                        }
+                        
+                        errorDiv.show();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    $('#error-messages')
+                        .html('<p>An unexpected error occurred. Please try again.</p>')
+                        .show();
+                });
             });
         });
     </script>
