@@ -11,9 +11,11 @@ from django.utils import timezone
 import subprocess
 import cv2
 from django.db.models import Sum
-
-
-
+from rest_framework import viewsets, status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .serializers import BorrowedItemSerializer, InventoryItemSerializer
 
 @login_required
 def home(request):
@@ -68,12 +70,6 @@ def home(request):
     }
 
     return render(request, 'home.html', context)
-
-
-
-
-
-
 
 
 # Register view
@@ -195,9 +191,9 @@ def edit_inventory_item(request, item_id):
             form.save()
             messages.success(request, "Item updated successfully.")
             return redirect('inventory')
-    else:
-        form = InventoryItemForm(instance=item)
-    return render(request, 'edit_inventory_item.html', {'form': form, 'item': item})
+        else:
+            messages.error(request, "Error updating item. Please check the form.")
+    return redirect('inventory')
 
 @login_required
 def delete_inventory_item(request, item_id):
@@ -289,3 +285,82 @@ def get_borrower_data():
 
     return borrower_data
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def borrow_item_api(request):
+    """
+    API endpoint for borrowing items
+    """
+    serializer = BorrowedItemSerializer(data=request.data)
+    if serializer.is_valid():
+        item_name = serializer.validated_data['item_name']
+        item_quantity = serializer.validated_data['item_quantity']
+        
+        try:
+            inventory_item = InventoryItem.objects.get(item_name=item_name)
+            available_quantity = inventory_item.available_quantity()
+            
+            if item_quantity > available_quantity:
+                return Response(
+                    {"error": f"Only {available_quantity} item(s) available for borrowing."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+            borrowed_item = serializer.save(
+                borrower_name=request.user.username,
+                status='borrowed'
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+        except InventoryItem.DoesNotExist:
+            return Response(
+                {"error": "Item not found in inventory."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def return_item_api(request, item_id):
+    """
+    API endpoint for returning items
+    """
+    try:
+        item = BorrowedItem.objects.get(id=item_id, borrower_name=request.user.username)
+        if item.status == 'returned':
+            return Response(
+                {"error": "Item has already been returned."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        item.status = 'returned'
+        item.return_date = timezone.now()
+        item.save()
+        
+        serializer = BorrowedItemSerializer(item)
+        return Response(serializer.data)
+        
+    except BorrowedItem.DoesNotExist:
+        return Response(
+            {"error": "Borrowed item not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+class InventoryViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint for viewing inventory items
+    """
+    queryset = InventoryItem.objects.all()
+    serializer_class = InventoryItemSerializer
+    permission_classes = [IsAuthenticated]
+
+class BorrowedItemViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint for viewing borrowed items
+    """
+    serializer_class = BorrowedItemSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return BorrowedItem.objects.filter(borrower_name=self.request.user.username)
