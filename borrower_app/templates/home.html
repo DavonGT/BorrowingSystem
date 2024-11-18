@@ -42,6 +42,13 @@
                         <h5 class="modal-title" id="addBorrowModalLabel">Borrow Item</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    <style>
+                        .modal-body {
+                            padding: 20px;
+                            background-color: #f9f9f9;
+                        }
+                        
+                    </style>
                     <div class="modal-body">
                         <form method="POST" action="{% url 'home' %}" class="form-borrower">
                             {% csrf_token %}
