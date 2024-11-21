@@ -133,15 +133,15 @@ def home(request):
 
 #     borrowed_items = BorrowedItem.objects.filter(borrower_name=request.user.username)
 
-    context = {
-        'form': form,
-        'borrowed_items': borrowed_items,
-        'total_borrowers': total_borrowers,
-        'total_borrowed_items': total_borrowed_items,
-        'total_returned_items': total_returned_items,
-    }
+    # context = {
+    #     'form': form,
+    #     'borrowed_items': borrowed_items,
+    #     'total_borrowers': total_borrowers,
+    #     'total_borrowed_items': total_borrowed_items,
+    #     'total_returned_items': total_returned_items,
+    # }
 
-    return render(request, 'home.html', context)
+    # return render(request, 'home.html', context)
 
 
 # Register view
@@ -161,19 +161,26 @@ def register_view(request):
 
 # Login view
 def login_view(request):
-    """
-    View for logging in users.
-    """
     if request.method == 'POST':
         auth_form = AuthenticationForm(data=request.POST)
         if auth_form.is_valid():
             user = auth_form.get_user()
             login(request, user)
             return redirect('home')
+        else:
+            # Override error messages
+            for field in auth_form:
+                if field.errors:
+                    if field.name == 'username':
+                        field.errors = ['Please Enter Correct Usernama']
+                    elif field.name == 'password':
+                        field.errors = ['Please Enter Correct Password']
     else:
         auth_form = AuthenticationForm()
+
     context = {'form': auth_form}
     return render(request, 'login.html', context)
+
 
 # Logout view
 def logout_view(request):

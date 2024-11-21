@@ -3,7 +3,10 @@
 {% block content %}
     <div class="container mt-4">
         <h2>Inventory</h2>
-
+        <!-- Add Item Button -->
+        <button type="button" class="add-item-btn mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal">
+            Add New Item
+        </button>
        
 
         <!-- Inventory Table with DataTables -->
@@ -40,10 +43,6 @@
             </tbody>
         </table>
         <br>
-         <!-- Add Item Button -->
-         <button type="button" class="add-item-btn mb-3" data-bs-toggle="modal" data-bs-target="#addItemModal">
-            Add New Item
-        </button>
     </div>
     
 

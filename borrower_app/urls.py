@@ -8,9 +8,9 @@ router.register(r'borrowed-items', views.BorrowedItemViewSet, basename='borrowed
 
 urlpatterns = [
     path('register/', views.register_view, name='register'),
-    path('login/', views.login_view, name='login'),
+    path('', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('', views.home, name='home'),
+    path('home', views.home, name='home'),
     path('data_table/', views.data_table_view, name='data_table'),
     path('inventory/', views.inventory_view, name='inventory'),
     path('inventory/edit/<int:item_id>/', views.edit_inventory_item, name='edit_inventory_item'),

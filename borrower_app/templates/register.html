@@ -11,22 +11,31 @@
 <body>
     <div class="main-container">
         <div class="login-container">
-            <div class="left-box">
+            <!-- Right Box -->
+            <div class="right-box">
                 <div class="header-text">
                     <h2>Register</h2>
                 </div>
                 <form method="post">
                     {% csrf_token %}
+                    
+                    <!-- Display non-field errors at the top of the form -->
+                    {% if form.non_field_errors %}
+                        <div class="error-message">
+                            <span class="error-icon">⚠️</span>
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     {% for field in form %}
-                        <div class="input-field-container">
+                        <div class="input-field">
+                            <input type="{{ field.field.widget.input_type }}" id="{{ field.id_for_label }}" name="{{ field.name }}" placeholder=" " value="{{ field.value|default_if_none:'' }}" required>
                             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            <div class="input-field">
-                                {{ field }}
-                            </div>
+                            
                             {% for error in field.errors %}
-                                <div class="error-message">
-                                    <span class="error-icon">⚠️</span>{{ error }}
-                                </div>
+                                <small class="error">{{ error }}</small>
                             {% endfor %}
                         </div>
                     {% endfor %}
@@ -34,12 +43,14 @@
                     <a href="{% url 'login' %}" class="cancel-btn">Cancel</a>
                 </form>
             </div>
-            <div class="right-box">
+            <!-- Left Box -->
+            <div class="left-box">
                 <div class="featured-image">
                     <img src="{% static 'images/essu_logo.jpg' %}" class="img-fluid">
                 </div>
-                <div class="borrower-text">Join Us Today</div>
+                <div class="borrower-text">Register Now</div>
             </div>
+            
         </div>
     </div>
 </body>

@@ -36,7 +36,7 @@
                         <li>{{ item.item_name }} ({{ item.item_quantity }}) - Borrowed by ---"{{ item.borrower_last_name }}, {{ item.borrower_first_name }} {{item.borrower_middle_name}}"--- on "{{ item.datenow }}"</li>
                     {% endfor %}
                 </ul>
-            {% else %}
+            {% else %}  
                 <p>No overdue items at the moment.</p>
             {% endif %}
         </div>

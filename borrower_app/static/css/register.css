@@ -1,3 +1,6 @@
+
+
+
 body {
     font-family: 'Poppins', sans-serif;
     background: #108a51;
@@ -44,6 +47,7 @@ body {
     font-weight: 700;
     color: #124703;
     margin-top: 20px;
+    margin-left: 50px;
 }
 
 .left-box {
@@ -63,20 +67,53 @@ body {
     margin-bottom: 20px;
 }
 
+.input-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+    width: 100%;
+    position: relative;
+}
+
 .input-field label {
-    font-size: 14px;
-    color: #333;
-    display: block;
-    margin-bottom: 5px;
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #aaa;
+    pointer-events: none;
+    transition: 0.3s ease;
+    font-style: italic;
 }
 
 .input-field input {
-    width: 100%;
     padding: 10px 15px;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    background: none;
     box-sizing: border-box;
+    outline: none;
+    width: 100%;
+}
+
+/* Move the label to the top when input is focused or has a value */
+.input-field input:focus,
+.input-field input:not(:placeholder-shown) {
+    border-bottom: 2px solid #108a51;
+}
+
+.input-field input:focus + label,
+.input-field input:not(:placeholder-shown) + label {
+    top: -10px;
+    font-size: 12px;
+    color: #108a51;
+}
+
+/* Hide placeholder text */
+.input-field input::placeholder {
+    color: transparent;
 }
 
 .signup-btn {
