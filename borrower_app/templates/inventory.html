@@ -31,6 +31,7 @@
                                     data-item-id="{{ item.id }}"
                                     data-item-name="{{ item.item_name }}"
                                     data-total-quantity="{{ item.total_quantity }}"
+                                    data-low-stock-threshold="{{ item.low_stock_threshold }}"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#editItemModal">
                                 Edit
@@ -79,11 +80,15 @@
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="edit_item_name" class="form-label">Item Name</label>
-                            <input type="text" class="form-control" id="edit_item_name" name="item_name" required>
+                            <input type="text" class="form-control" id="edit_item_name" name="item_name" required style="text-transform: capitalize;">
                         </div>
                         <div class="mb-3">
                             <label for="edit_total_quantity" class="form-label">Total Quantity</label>
                             <input type="number" class="form-control" id="edit_total_quantity" name="total_quantity" required min="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_low_stock_threshold" class="form-label">Low Stock Alert Threshold</label>
+                            <input type="number" class="form-control" id="edit_low_stock_threshold" name="low_stock_threshold" required min="1">
                         </div>
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </form>
@@ -102,9 +107,11 @@
                 var itemId = $(this).data('item-id');
                 var itemName = $(this).data('item-name');
                 var totalQuantity = $(this).data('total-quantity');
+                var lowStockThreshold = $(this).data('low-stock-threshold');
 
                 $('#edit_item_name').val(itemName);
                 $('#edit_total_quantity').val(totalQuantity);
+                $('#edit_low_stock_threshold').val(lowStockThreshold);
                 $('#editItemForm').attr('action', '/inventory/edit/' + itemId + '/');
             });
 
