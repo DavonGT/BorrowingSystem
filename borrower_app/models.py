@@ -19,14 +19,17 @@ class BorrowedItem(models.Model):
 class InventoryItem(models.Model):
     item_name = models.CharField(max_length=100, unique=True)
     total_quantity = models.PositiveIntegerField()
-    
-    
+    low_stock_threshold = models.IntegerField(default=5, help_text="Alert when quantity falls below this number")
+
     def available_quantity(self):
         # Calculate the quantity available for borrowing
         borrowed_quantity = BorrowedItem.objects.filter(
             item_name=self.item_name, status='borrowed'
         ).aggregate(models.Sum('item_quantity'))['item_quantity__sum'] or 0
         return self.total_quantity - borrowed_quantity
+
+    def is_low_stock(self):
+        return self.available_quantity() <= self.low_stock_threshold
 
     def __str__(self):
         return f"{self.item_name} - Available: {self.available_quantity()}"

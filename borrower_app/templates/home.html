@@ -28,19 +28,33 @@
                 <p class="text-number">None</p>
             </div>
         </div>
+
+
         <div class="lower-container">
             <h4>Items Borrowed for Too Long</h4>
             {% if overdue_items %}
                 <ul>
                     {% for item in overdue_items %}
-                        <li>{{ item.item_name }} ({{ item.item_quantity }}) - Borrowed by ---"{{ item.borrower_last_name }}, {{ item.borrower_first_name }} {{item.borrower_middle_name}}"--- on "{{ item.datenow }}"</li>
+                        <li>{{ item.item_name }} ({{ item.item_quantity }}) - Borrowed by {{ item.borrower_name }} on {{ item.borrow_date|date:"M d, Y" }}</li>
                     {% endfor %}
                 </ul>
             {% else %}  
                 <p>No overdue items at the moment.</p>
             {% endif %}
         </div>
-        
+
+        {% if low_stock_items %}
+        <div class="lower-container">
+            <h4>Low Stock Alerts</h4>
+            <ul>
+                {% for item in low_stock_items %}
+                <li class="alert-item">{{ item.item_name }} - Only {{ item.available_quantity }} left (Threshold: {{ item.low_stock_threshold }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+       
 
         <!-- Modal for Adding Items -->
         <div class="modal fade" id="addBorrowModal" tabindex="-1" aria-labelledby="addBorrowModalLabel" aria-hidden="true">
@@ -55,7 +69,15 @@
                             padding: 20px;
                             background-color: #f9f9f9;
                         }
-                        
+                        .alert-item {
+                            color: #856404;
+                            background-color: #fff3cd;
+                            border: 1px solid #ffeeba;
+                            padding: 10px;
+                            margin: 5px 0;
+                            border-radius: 4px;
+                            list-style-type: none;
+                        }
                     </style>
                     <div class="modal-body">
                         <form method="POST" action="{% url 'home' %}" class="form-borrower">
@@ -71,7 +93,6 @@
                             </form>
 
                             <button type="button" class="submit-btn" id="populate-form-btn">Submit</button>
-
                         </div>
                     </div>
                 </div>
@@ -117,5 +138,4 @@
         .catch(error => console.error('Error fetching borrower data:', error));
     });
 </script>
-
 {% endblock %}
