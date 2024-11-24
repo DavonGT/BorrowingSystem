@@ -195,7 +195,8 @@ def edit_inventory_item(request, item_id):
             messages.success(request, "Item updated successfully.")
             return redirect('inventory')
         else:
-            messages.error(request, "Error updating item. Please check the form.")
+            error_message = form.errors.as_text()
+            messages.error(request, f"Error updating item: {error_message}")
     return redirect('inventory')
 
 @login_required

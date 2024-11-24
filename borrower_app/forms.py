@@ -1,5 +1,6 @@
 from django import forms
 from .models import BorrowedItem, InventoryItem
+from django.db.models import Sum
 
 class InventoryItemForm(forms.ModelForm):
     class Meta:
@@ -42,6 +43,20 @@ class InventoryItemForm(forms.ModelForm):
                 raise forms.ValidationError(
                     "Low stock threshold cannot be greater than total quantity."
                 )
+
+        # If this is an edit (instance exists)
+        if self.instance and self.instance.pk:
+            # Calculate currently borrowed quantity
+            borrowed_quantity = BorrowedItem.objects.filter(
+                item_name=self.instance.item_name,
+                status='borrowed'
+            ).aggregate(Sum('item_quantity'))['item_quantity__sum'] or 0
+
+            if total_quantity < borrowed_quantity:
+                raise forms.ValidationError(
+                    f"Total quantity cannot be less than the currently borrowed quantity ({borrowed_quantity})."
+                )
+
         return cleaned_data
 
 
