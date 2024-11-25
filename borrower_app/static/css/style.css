@@ -405,17 +405,52 @@ input[name="total_quantity"] {
 
 /*CSS for home Modal*/
 
-/* Button Styling within Modal */
-.borrow-btn {
-    background-color: #28a745;
+.scan-button-row {
+    display: flex;  
+    justify-content: center;
+} 
+
+.button-row{
+    display: flex;
+}
+
+button.borrow-btn,
+button.scan-btn,
+button.submit-btn {
     border: none;
-    padding: 10px 20px;
+    padding: 10px 30px;
     font-size: 16px;
     border-radius: 4px;
     margin: 10px 10px;
     color: white;
 
 }
+
+
+/* Different colors for each button */
+button.scan-btn {
+    background-color: #007bff;
+}
+
+button.scan-btn:hover {
+    background-color: #0056b3;
+}
+
+button.submit-btn,
+button.borrow-btn {
+    background-color: #28a745;
+}
+
+button.borrow-btn:hover,
+button.submit-btn:hover {
+    background-color: #218838;
+}
+
+button.submit-btn:disabled{
+    background-color: #b1b1b1;
+    color: #777;
+}
+
 
 button.add-btn {
     padding: 10px 20px;
@@ -480,42 +515,6 @@ select[name="item_name"]:focus {
     border-color: #80bdff;
     outline: none;
     box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
-}
-
-.button-row {
-    display: flex;
-    gap: 10px; /* Space between buttons */
-    justify-content: center; /* Center the buttons horizontally */
-    margin-top: 10px; /* Space above the button row */
-}
-
-/* Individual Button Styling */
-button.scan-btn,
-button.submit-btn {
-    padding: 10px 20px;
-    border-radius: 4px;
-    border: none;
-    font-size: 14px;
-    font-weight: bold;
-    color: #fff;
-    cursor: pointer;
-}
-
-/* Different colors for each button */
-button.scan-btn {
-    background-color: #007bff;
-}
-
-button.scan-btn:hover {
-    background-color: #0056b3;
-}
-
-button.submit-btn {
-    background-color: #28a745;
-}
-
-button.submit-btn:hover {
-    background-color: #218838;
 }
 
 /* Label Styling */

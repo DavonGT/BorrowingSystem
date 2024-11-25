@@ -5,10 +5,20 @@
     {% load static %}
     <h2 class="home-header">Borrower's Dashboard</h2>
     <div class="form-container">
-        <!-- Add Item Button -->
-        <button type="button" class="borrow-btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addBorrowModal">
-            Borrow an Item
-        </button>
+        <div class="button-row">
+            <!-- Add Item Button -->
+            <button type="button" class="borrow-btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addBorrowModal">
+                Borrow an Item
+            </button>
+            <!-- Button Container for Row Layout -->
+            <div class="scan-button-row">
+                <form method="GET" action="{% url 'scan_paper' %}">
+                    <button type="submit" class="scan-btn">Scan Paper</button>
+                </form>
+
+                <button type="button" class="submit-btn mb-3" id="populate-form-btn" data-bs-toggle="modal" data-bs-target="#addBorrowModal" disabled>Submit</button>
+            </div>
+        </div>
 
         <div class="upper-container">
             <div class="box-container">
@@ -85,15 +95,6 @@
                             {{ form.as_p }}
                             <button type="submit" class="add-btn">Add Item</button>
                         </form>
-
-                        <!-- Button Container for Row Layout -->
-                        <div class="button-row">
-                            <form method="GET" action="{% url 'scan_paper' %}">
-                                <button type="submit" class="scan-btn">Scan Paper</button>
-                            </form>
-
-                            <button type="button" class="submit-btn" id="populate-form-btn">Submit</button>
-                        </div>
                     </div>
                 </div>
             </div>
