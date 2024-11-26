@@ -51,6 +51,39 @@ h4 {
     left: 15px;
 }
 
+
+
+.nav-links a {
+    text-decoration: none;
+    color: rgb(183, 183, 183);
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 4px;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+/* Underline effect on hover */
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;  /* Position the underline slightly below the text */
+    width: 100%;
+    height: 2px;   /* Thickness of the underline */
+    background-color: #124703;  /* Underline color */
+    transform: scaleX(0);  /* Initially scale to 0 (hidden) */
+    transition: transform 0.3s ease-in-out;
+}
+
+.nav-links a:hover {
+    color: #124703;  /* Text color when hovered */
+}
+
+.nav-links a:hover::after {
+    transform: scaleX(1);  /* Expand the underline when hovering */
+}
+
 .nav-links {
     display: flex;
     gap: 20px;
@@ -63,13 +96,14 @@ h4 {
     color: #333;
     font-weight: bold;
     font-size: 16px;
-    padding: 6px 10px;
+    padding: 1px 10px;
     border-radius: 10px;
-    transition: background-color 0.3s ease;
     margin-top: 5px;
+    transition: color 0.3s ease;
+    position: relative;
 }
 
-.nav-links .nav-hover:hover {
+/*.nav-links .nav-hover:hover {
     color: #edfbe9;
     background-color: #124703;
 }
@@ -77,7 +111,7 @@ h4 {
 .nav-links .nav-active {
     color: #e1ede0;
     background-color: #175813;
-}
+} */
 
 .heading {
     font-size: 22px;
