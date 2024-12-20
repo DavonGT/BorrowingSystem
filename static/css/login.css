@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #108a51;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    display: flex;
+    width: 700px;
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.left-box {
+    background-color: #e5ffde;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.featured-image img {
+    width: 280px;
+}
+
+.borrower-text {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #124703;
+    margin-top: 20px;
+}
+
+.right-box {
+    width: 50%;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.header-text h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.input-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+    width: 100%;
+    position: relative;
+}
+
+.input-field label {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #aaa;
+    pointer-events: none;
+    transition: 0.3s ease;
+    font-style: italic;
+}
+
+.input-field input {
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    background: none;
+    box-sizing: border-box;
+    outline: none;
+    width: 100%;
+}
+
+/* Move the label to the top when input is focused or has a value */
+.input-field input:focus,
+.input-field input:not(:placeholder-shown) {
+    border-bottom: 2px solid #108a51;
+}
+
+.input-field input:focus + label,
+.input-field input:not(:placeholder-shown) + label {
+    top: -10px;
+    font-size: 12px;
+    color: #108a51;
+}
+
+/* Hide placeholder text */
+.input-field input::placeholder {
+    color: transparent;
+}
+
+.login-btn {
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    background-color: #108a51;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+    background-color: #0c6d3f;
+}
+
+.nav-link {
+    margin-left: 45px;
+    margin-top: 5px;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.error-icon {
+    margin-right: 8px;
+    color: #721c24;
+    font-size: 1.2em;
+}
+

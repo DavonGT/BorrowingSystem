@@ -13,6 +13,8 @@ from scipy import ndimage
 
 from HTR.aruco_crop import crop_using_aruco as crop
 
+# pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract'
+
 def calculate_skew_angle(image):
     """Calculate the skew angle of the image."""
     # Convert to grayscale and threshold

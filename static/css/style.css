@@ -1,0 +1,587 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+
+
+
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: white;
+}
+
+
+
+
+h2 {
+    margin-top: 12vh;
+    font-size: 30px;
+    font-weight: bold;
+    color: #124703;
+    margin-bottom: 10px;
+}
+
+h4 {
+    margin-top: 10px;
+    font-size: 25px;
+    font-weight: bold;
+    color: #124703;
+    margin-bottom: 10px;
+}
+
+
+.navbar {
+    background-color: #f8fff6;
+    height: 60px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between; /* Adjust for logo + links */
+    align-items: center;
+    padding: 0 15px;
+    border-bottom: 2px solid green;
+    z-index: 100000;
+    flex-wrap: wrap; /* Allow wrapping for small screens */
+}
+
+.navbar .logo {
+    height: 40px;
+    width: 40px;
+    position: fixed;
+    left: 15px;
+}
+
+
+
+.nav-links a {
+    text-decoration: none;
+    color: rgb(183, 183, 183);
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 4px;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+/* Hover effect */
+.nav-links a:hover {
+    color: #124703;
+}
+
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 100%;
+    height: 2px;
+    background-color: #124703;
+    transform: scaleX(0); /* Default hidden */
+    transition: transform 0.3s ease-in-out;
+}
+
+.nav-links a:hover::after {
+    transform: scaleX(1); /* Show underline on hover */
+}
+
+/* Active link styling */
+.nav-links a.active {
+    color: #124703; /* Active link color */
+    font-weight: bold; /* Optional */
+}
+
+.nav-links a.active::after {
+    transform: scaleX(1); /* Ensure underline is visible */
+}
+
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    margin-left: 60%;
+    position: absolute;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 1px 10px;
+    border-radius: 10px;
+    margin-top: 5px;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+/*.nav-links .nav-hover:hover {
+    color: #edfbe9;
+    background-color: #124703;
+}
+
+.nav-links .nav-active {
+    color: #e1ede0;
+    background-color: #175813;
+} */
+
+.heading {
+    font-size: 22px;
+    font-weight: bold;
+    margin-left: 60px;
+    margin-top: 15px;
+}
+
+
+.border {
+    margin-top: 70px;
+    height: 2px;
+    background-color: none;
+}
+
+
+/* CSS for data table*/
+
+.container {
+    margin-top: 30px;
+}
+
+.form-container{
+    margin-top: 10px;
+}
+
+
+.form-borrower label{
+    font-size: 20px;
+    font-weight: 500;
+}
+
+
+
+
+#items-table {
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+#items-table thead {
+    background-color: #108a51;
+    color: white;
+}
+
+#items-table th {
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+#items-table td {
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+}
+
+#items-table tbody tr:nth-child(odd) {
+    background-color: #f7f7f7;
+}
+
+#items-table tbody tr:hover {
+    background-color: #f4fff5;
+}
+
+.dataTables_filter {
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.dataTables_filter input {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.btn {
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-sm {
+    font-size: 13px;
+    padding: 5px 10px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.btn-secondary {
+    padding: 10px 30px;
+    color: white;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  CCS for Inventory */
+
+
+.section-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #124703;
+    margin-bottom: 20px;
+}
+
+
+.btn-primary {
+    background-color: #124703;
+    border-color: #124703;
+    font-size: 16px;
+    padding: 8px 15px;
+}
+
+.btn-primary:hover {
+    background-color: #106b2f;
+    border-color: #106b2f;
+}
+
+
+#inventoryTable {
+    width: 100%;
+    margin-top: 30px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+#inventoryTable thead {
+    background-color: #108a51;
+    color: white;
+}
+
+#inventoryTable th, #inventoryTable td {
+    text-align: left;
+    padding: 12px 15px;
+}
+
+#inventoryTable td {
+    font-size: 14px;
+}
+
+
+#inventoryTable tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+#inventoryTable tbody tr:hover {
+    background-color: #f4fff5;
+}
+
+.add-item-btn {
+    background-color: #108a51;
+    font-size: 16px;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+
+}
+
+  
+  /* Modal close button */
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #ffffff;
+  }
+
+
+/* Modal Content Styling */
+.modal-content {
+    margin-top: 100px; /* Centers the modal vertically */
+    border-radius: 8px; /* Adds rounded corners */
+    overflow: hidden; /* Prevents overflow on rounded corners */
+    width: 500px;
+}
+
+/* Modal Header Styling */
+.modal-header {
+    background-color: #124703;
+    color: white;
+    padding: 15px; /* Adds padding for a more balanced look */
+    border-bottom: 2px solid #106b2f;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0; /* Removes default margin */
+}
+
+/* Close Button Styling */
+.btn-close {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.btn-close:hover {
+    color: #ccc; /* Changes color on hover for better UX */
+}
+
+
+.modal-body {
+    padding: 20px;
+}
+
+input[name="item_name"],
+input[name="total_quantity"] {
+    width: 100%;
+    padding: 5px;
+    margin-top: 8px;    
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+
+
+
+/*CSS for home */
+
+.home-header{
+    margin-bottom: 0px !important; 
+
+}
+
+.upper-container {
+    margin: 0px 0px;
+    background-color: #f4f5f7;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-around;
+    gap: 23px;
+}
+.lower-container{
+    margin: 10px 0px;
+    background-color: #f4f5f7;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.box-container {
+    margin: 10px 0px;
+    background-color: ddd;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.text-header {
+    font-weight: bold;
+    font-size: 1em;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+
+.text-number {
+    margin-top: 15px;
+    margin-bottom: 0px;
+    font-size: 1.5em;
+    color: black;
+    font-weight: bold;
+    
+}
+
+
+
+
+/*CSS for home Modal*/
+
+.scan-button-row {
+    display: flex;  
+    justify-content: center;
+} 
+
+.button-row{
+    display: flex;
+}
+
+button.borrow-btn,
+button.scan-btn,
+button.submit-btn {
+    border: none;
+    padding: 10px 30px;
+    font-size: 16px;
+    border-radius: 4px;
+    margin: 10px 10px;
+    color: white;
+
+}
+
+
+/* Different colors for each button */
+button.scan-btn {
+    background-color: #007bff;
+}
+
+button.scan-btn:hover {
+    background-color: #0056b3;
+}
+
+button.submit-btn,
+button.borrow-btn {
+    background-color: #28a745;
+}
+
+button.borrow-btn:hover,
+button.submit-btn:hover {
+    background-color: #218838;
+}
+
+button.submit-btn:disabled{
+    background-color: #b1b1b1;
+    color: #777;
+}
+
+
+button.add-btn {
+    padding: 10px 20px;
+    background-color: #28a745;
+    border-radius: 4px;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background-color: #218838;
+}
+
+/* Input Field Styling */
+
+.form-borrower {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.form-borrower button.add-btn {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.form-borrower button.add-btn:hover {
+    background-color: #0056b3;
+}
+.form-borrower select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+}
+
+input[name="borrower_middle_name"],
+input[name="borrower_last_name"],
+input[name="borrower_first_name"],
+input[name="item_quantity"],
+select[name="item_name"] {
+    width: 100%;
+    padding: 5px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+input[name="borrower_middle_name"]:focus,
+input[name="borrower_last_name"]:focus,
+input[name="borrower_first_name"]:focus,
+input[name="item_quantity"]:focus,
+select[name="item_name"]:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+}
+
+/* Label Styling */
+.form-borrower label {
+    font-size: 14px; /* Smaller font size */
+    font-weight: normal; /* Optional: Make the label lighter */
+    color: #555; /* Set the label color */
+    margin-bottom: 4px; /* Add spacing below the label */
+    display: block; /* Ensure the label appears above the input */
+    line-height: 1.2; /* Adjust line height for better readability */
+}
+
+/* Additional adjustment if using floating labels (MDBootstrap or similar) */
+.form-outline label {
+    font-size: 12px; /* Smaller floating label font */
+    color: #777; /* Change color for better contrast */
+}
+
+/* Adjust position of floating labels when active */
+.form-outline input:focus + label,
+.form-outline input:not(:placeholder-shown) + label {
+    font-size: 10px; /* Reduce label size when input is focused */
+    top: -10px; /* Adjust position when floating */
+    color: #007bff; /* Optional: Highlight active label */
+}

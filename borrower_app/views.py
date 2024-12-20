@@ -221,7 +221,27 @@ def scan_paper(request):
 
              # Cropping the scanned image
             image = cv2.imread(image_path)
-            h, w, _ = image.shape
+            try:
+                h, w,   _ = image.shape
+            except:
+                return HttpResponse("""
+<style>
+    div{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-top: 250px;
+}
+</style>
+<center>
+<div>
+<h1 style="text-align:center;">No Scanner Detected!</h1>
+
+</div>
+<h8>(Sorry......)</h8>
+</center>
+                                                                   """)
             image = image[:h // 2, :w // 2]
             cv2.imwrite(image_path, image)
 
