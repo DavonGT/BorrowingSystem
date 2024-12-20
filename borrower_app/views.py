@@ -215,44 +215,22 @@ def get_item_names(request):
 def scan_paper(request):
     image_path = 'HTR/scannedImages/scanned_form.png'
     with open(image_path, 'wb') as f:
-        is_scan = subprocess.run('scanimage --format=png --mode Color --resolution 600 --brightness 50 --contrast 50',
-                                 stdout=f, shell=True)
+        is_scan = subprocess.run('scanimage --format=png --mode Color --resolution 600', stdout=f, shell=True)
         if is_scan.returncode != 0:
-
-             # Cropping the scanned image
+            # Cropping the scanned image
             image = cv2.imread(image_path)
-            try:
-                h, w,   _ = image.shape
-            except:
-                return HttpResponse("""
-<style>
-    div{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        margin-top: 250px;
-}
-</style>
-<center>
-<div>
-<h1 style="text-align:center;">No Scanner Detected!</h1>
-
-</div>
-<h8>(Sorry......)</h8>
-</center>
-                                                                   """)
-            image = image[:h // 2, :w // 2]
+            h, w, _ = image.shape
+            image = image[:h // 2, :w//2]
             cv2.imwrite(image_path, image)
 
-        # Doing now the actual scanning
+            # Doing now the actual scanning
             scan = subprocess.run(f'python3 HTR/ocr.py {image_path}', shell=True)
             if scan.returncode == 0:
                 return HttpResponse('Scanned')
             else:
                 return HttpResponse('Not Scanned')
     
-    return HttpResponse('No Scanner Connected.')
+    return HttpResponse('Scan Complete.')
 
 
 def read_txt_file(file_path):

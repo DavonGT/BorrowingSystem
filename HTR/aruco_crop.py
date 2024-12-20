@@ -22,9 +22,9 @@ def crop_using_aruco(image_path, output_path=f'HTR/croppedImages/crop{date}.png'
 
     # Create a dictionary of ArUco markers
     aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
-
+    detector = cv2.aruco.ArucoDetector(aruco_dict)
     # Detect ArUco markers in the image
-    corners, ids, _ = cv2.aruco.detectMarkers(img, aruco_dict)
+    corners, ids, _ = detector.detectMarkers(img)
 
     print("Detected corners:", corners)
     print("Detected IDs:", ids)
