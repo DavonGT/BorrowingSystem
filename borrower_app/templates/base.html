@@ -6,54 +6,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Borrowing System</title>
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+
+    <!-- Font Awesome CSS for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-
-    <!-- Navigation Bar -->
+    <!-- Navbar -->
     <div class="navbar">
         <img class="logo" src="{% static 'images/essu_logo_no_text.png' %}" alt="Logo">
         <h2 class="heading">ESSU Borrower</h2>
-        <div class="nav-links">
-            <a href="{% url 'home' %}" class="nav-home">Home</a>
-            <a href="{% url 'data_table' %}" class="nav-pending">Items Overview</a>
-            <a href="{% url 'inventory' %}" class="nav-return">Inventory</a>
-            <a href="{% url 'logout' %}" class="nav-logout">Logout</a>
-        </div>
+        <button class="nav-menu-button">&#9776;</button>
     </div>
 
+    <!-- Navigation Links (Sliding Menu) -->
+    <div class="nav-links">
+        <!-- Back Arrow to close the menu -->
+        <button class="nav-close-button">
+            <i class="fas fa-arrow-right"></i>  {{ current_page }}
+        </button>
+
+        <!-- Green line separating the arrow from the navigation links -->
+        <div class="nav-line"></div>
+
+        <a href="{% url 'home' %}" class="nav-home">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <a href="{% url 'data_table' %}" class="nav-pending">
+            <i class="fas fa-boxes"></i> Item Overview
+        </a>
+        <a href="{% url 'inventory' %}" class="nav-return">
+            <i class="fas fa-archive"></i> Inventory
+        </a>
+        <a href="{% url 'logout' %}" class="nav-logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+
+    </div>
+
+    <!-- Overlay for the menu -->
+    <div class="nav-overlay"></div>
+
     <!-- Page Content -->
-    {% block content %}
-    {% endblock %}
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Active Link Script -->
+    <!-- JavaScript -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const navLinks = document.querySelectorAll(".nav-links a");
-            const currentPath = window.location.pathname;
-    
-            navLinks.forEach(link => {
-                // Match the base URL path
-                if (currentPath.startsWith(link.pathname)) {
-                    link.classList.add("active");
-                } else {
-                    link.classList.remove("active");
-                }
+            const menuButton = document.querySelector(".nav-menu-button");
+            const navLinks = document.querySelector(".nav-links");
+            const overlay = document.querySelector(".nav-overlay");
+            const closeButton = document.querySelector(".nav-close-button");
+
+            // Toggle the menu
+            menuButton.addEventListener("click", () => {
+                navLinks.classList.toggle("open");
+                overlay.classList.toggle("show");
+            });
+
+            // Close the menu when clicking on the overlay
+            overlay.addEventListener("click", () => {
+                navLinks.classList.remove("open");
+                overlay.classList.remove("show");
+            });
+
+            // Close the menu when clicking the back arrow
+            closeButton.addEventListener("click", () => {
+                navLinks.classList.remove("open");
+                overlay.classList.remove("show");
             });
         });
     </script>
-    
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

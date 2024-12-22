@@ -17,6 +17,13 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import BorrowedItemSerializer, InventoryItemSerializer
 from datetime import timedelta
+import platform
+import win32com.client
+import pythoncom
+import comtypes.client
+import comtypes
+import os
+from .models import InventoryItem
 
 
 @login_required
@@ -90,7 +97,6 @@ def home(request):
         'low_stock_items': low_stock_items,
         'overdue_items': overdue_items,
     }
-
     return render(request, 'home.html', context)
 
 
@@ -211,26 +217,155 @@ def get_item_names(request):
     items = InventoryItem.objects.values_list('item_name', flat=True)
     return JsonResponse(list(items), safe=False)
 
+# @csrf_exempt
+# def scan_paper(request):
+#     image_path = 'HTR/scannedImages/scanned_form.png'
+#     with open(image_path, 'wb') as f:
+#         is_scan = subprocess.run('scanimage --format=png --mode Color --resolution 600', stdout=f, shell=True)
+#         if is_scan.returncode != 0:
+#             # Cropping the scanned image
+#             image = cv2.imread(image_path)
+#             h, w, _ = image.shape
+#             image = image[:h // 2, :w//2]
+#             cv2.imwrite(image_path, image)
+
+#             # Doing now the actual scanning
+#             scan = subprocess.run(f'python3 HTR/ocr.py {image_path}', shell=True)
+#             if scan.returncode == 0:
+#                 return HttpResponse('Scanned')
+#             else:
+#                 return HttpResponse('Not Scanned')
+    
+#     return HttpResponse('Scan Complete.')
+
+
+# @csrf_exempt
+# def scan_paper(request):
+#     image_path = 'HTR/scannedImages/scanned_form.png'
+#     with open(image_path, 'wb') as f:
+#         is_scan = subprocess.run('scanimage --format=png --mode Color --resolution 600', stdout=f, shell=True)
+#         if is_scan.returncode != 0:
+#             # Cropping the scanned image
+#             image = cv2.imread(image_path)
+#             h, w, _ = image.shape
+#             image = image[:h // 2, :w // 2]
+#             cv2.imwrite(image_path, image)
+
+#             # Doing now the actual scanning
+#             scan = subprocess.run(f'python3 HTR/ocr.py {image_path}', shell=True)
+#             if scan.returncode == 0:
+#                 return JsonResponse({'status': 'success', 'message': 'Scanning complete'})
+#             else:
+#                 return JsonResponse({'status': 'error', 'message': 'Scanning failed'})
+
+#     return JsonResponse({'status': 'complete', 'message': 'Scanning complete'})
+
+
+
+
+
+
 @csrf_exempt
 def scan_paper(request):
-    image_path = 'HTR/scannedImages/scanned_form.png'
-    with open(image_path, 'wb') as f:
-        is_scan = subprocess.run('scanimage --format=png --mode Color --resolution 600', stdout=f, shell=True)
-        if is_scan.returncode != 0:
-            # Cropping the scanned image
-            image = cv2.imread(image_path)
-            h, w, _ = image.shape
-            image = image[:h // 2, :w//2]
-            cv2.imwrite(image_path, image)
-
-            # Doing now the actual scanning
-            scan = subprocess.run(f'python3 HTR/ocr.py {image_path}', shell=True)
-            if scan.returncode == 0:
-                return HttpResponse('Scanned')
-            else:
-                return HttpResponse('Not Scanned')
+    # Windows-specific image path using backslashes
+    if platform.system() == "Windows":
+        image_path = r'HTR\scannedImages\scanned_form.png'
+    else:
+        image_path = 'HTR/scannedImages/scanned_form.png'  # Default for Linux/macOS
     
-    return HttpResponse('Scan Complete.')
+    # Determine the operating system
+    system_platform = platform.system()
+
+    # If it's a Linux system, use scanimage
+    if system_platform == "Linux":
+        with open(image_path, 'wb') as f:
+            is_scan = subprocess.run('scanimage --format=png --mode Color --resolution 600', stdout=f, shell=True)
+            if is_scan.returncode != 0:
+                # Cropping the scanned image if scan failed
+                image = cv2.imread(image_path)
+                h, w, _ = image.shape
+                image = image[:h // 2, :w // 2]
+                cv2.imwrite(image_path, image)
+
+                # Perform OCR (this is assuming 'ocr.py' is the process for OCR)
+                scan = subprocess.run(f'python3 HTR/ocr.py {image_path}', shell=True)
+                if scan.returncode == 0:
+                    return JsonResponse({'status': 'success', 'message': 'Scanning complete'})
+                else:
+                    return JsonResponse({'status': 'error', 'message': 'Scanning failed'})
+    
+    # If it's a Windows system, use WIA
+    elif system_platform == "Windows":
+        try:
+            # Initialize COM library
+            pythoncom.CoInitialize() 
+
+            # Initialize WIA
+            wia = win32com.client.Dispatch("WIA.CommonDialog")
+            device_manager = win32com.client.Dispatch("WIA.DeviceManager")
+
+            # List connected devices
+            print("Connected devices:")
+            for device in device_manager.DeviceInfos:
+                print(f"ID: {device.DeviceID}, Name: {device.Properties['Name'].Value}")
+
+            # Select a scanner
+            print("\nSelect a scanner:")
+            device = wia.ShowSelectDevice(1, False)  # 1 = Scanner, 0 = Camera
+
+            if device:
+                print(f"Selected device: {device.Properties['Name'].Value}")
+                print('po')
+
+
+                 # Check the number of items in the device
+                item_count = len(device.Items)
+                print(f"Number of items in the device: {item_count}")
+
+                if item_count > 0:
+                    # Scan the first item
+                    item = device.Items[0]
+                    item.Properties["6147"].Value = 600  # Horizontal Resolution (DPI)
+                    item.Properties["6148"].Value = 600  # Vertical Resolution (DPI)
+                    item.Properties["6146"].Value = 1    # Color Intent (1 = Color, 2 = Grayscale, 4 = Black-White)
+                   
+                    image_file = wia.ShowTransfer(item, "{B96B3CAB-0728-11D3-9D7B-0000F81EF32E}")  # FormatID for PNG
+                    if os.path.exists(image_path):
+                        os.remove(image_path)
+                    image_file.SaveFile(image_path)
+                    print("Image scanned and saved.")
+
+                    # Cropping the scanned image
+                    image = cv2.imread(image_path)
+                    if image is None:
+                        return JsonResponse({'status': 'error', 'message': 'Failed to read scanned image'})
+
+                    h, w, _ = image.shape
+                    cropped_image = image[:h // 2, :w // 2]
+                    cv2.imwrite(image_path, cropped_image)
+
+                    # Perform OCR on the cropped image
+                    scan = subprocess.run(f'python HTR/ocr_windows.py {image_path}', shell=True)
+                    if scan.returncode == 0:
+                        return JsonResponse({'status': 'success', 'message': 'Scanning complete'})
+                    else:
+                        return JsonResponse({'status': 'error', 'message': 'OCR failed'})
+
+            return JsonResponse({'status': 'error', 'message': 'No items found in the device'})
+
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+
+        finally:
+            pythoncom.CoUninitialize()  # Uninitialize COM library
+
+        return JsonResponse({'status': 'complete', 'message': 'Scanning complete'})
+    # # Return a message for unsupported platforms
+    # else:
+    #     return JsonResponse({'status': 'error', 'message': 'Unsupported OS for scanning'})
+
+    # return JsonResponse({'status': 'complete', 'message': 'Scanning complete'})
+
 
 
 def read_txt_file(file_path):
@@ -265,7 +400,19 @@ def get_borrower_data():
         first_name = txt_data[1].title()
         middle_name = txt_data[2].title()
         item_name = txt_data[3].title()
+        if item_name is None:
+            item_name = ''
         item_quantity =int(txt_data[4])
+        if item_quantity is None:
+            item_quantity = 0
+        
+        # Fetch the available quantity from the inventory
+        inventory_item = get_object_or_404(InventoryItem, name=item_name)
+        available_quantity = inventory_item.quantity
+
+        # Validate the item_quantity
+        if item_quantity > available_quantity:
+            item_quantity = available_quantity
 
         borrower_data = {
             'borrower_last_name': last_name,

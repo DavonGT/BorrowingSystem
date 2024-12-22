@@ -6,16 +6,15 @@
     <h2 class="home-header">Borrower's Dashboard</h2>
     <div class="form-container">
         <div class="button-row">
-            <!-- Add Item Button -->
+            <!-- Borrow Item Button -->
             <button type="button" class="borrow-btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addBorrowModal">
                 Borrow an Item
             </button>
+
             <!-- Button Container for Row Layout -->
             <div class="scan-button-row">
-                <form method="GET" action="{% url 'scan_paper' %}">
-                    <button type="submit" class="scan-btn">Scan Paper</button>
-                </form>
-
+                <!-- Scan Paper Button -->
+                <button type="button" class="scan-btn" id="scan-paper-btn">Scan Paper</button>
                 <button type="button" class="submit-btn mb-3" id="populate-form-btn" data-bs-toggle="modal" data-bs-target="#addBorrowModal">Submit</button>
             </div>
         </div>
@@ -39,7 +38,6 @@
             </div>
         </div>
 
-
         <div class="lower-container">
             <h4>Items Borrowed for Too Long</h4>
             {% if overdue_items %}
@@ -48,7 +46,7 @@
                         <li>{{ item.item_name }} ({{ item.item_quantity }}) - Borrowed by {{ item.borrower_name }} on {{ item.borrow_date|date:"M d, Y" }}</li>
                     {% endfor %}
                 </ul>
-            {% else %}  
+            {% else %}
                 <p>No overdue items at the moment.</p>
             {% endif %}
         </div>
@@ -63,8 +61,6 @@
             </ul>
         </div>
         {% endif %}
-
-       
 
         <!-- Modal for Adding Items -->
         <div class="modal fade" id="addBorrowModal" tabindex="-1" aria-labelledby="addBorrowModalLabel" aria-hidden="true">
@@ -88,6 +84,20 @@
                             border-radius: 4px;
                             list-style-type: none;
                         }
+                        #loading-overlay {
+                            display: none;
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(0, 0, 0, 0.5);
+                            color: white;
+                            font-size: 20px;
+                            text-align: center;
+                            line-height: 100vh;
+                            z-index: 1000;
+                        }
                     </style>
                     <div class="modal-body">
                         <form method="POST" action="{% url 'home' %}" class="form-borrower">
@@ -101,25 +111,37 @@
         </div>
     </div>
 </div>
+
+<div id="loading-overlay">Scanning... Please wait.</div>
+
 <script>
-    $(document).ready(function() {
-        // jQuery UI Autocomplete for item_name field
-        $("#id_item_name").autocomplete({
-            source: function(request, response) {
-                $.ajax({
-                    url: "{% url 'get_item_names' %}",
-                    dataType: "json",
-                    success: function(data) {
-                        response(data);
-                    }
-                });
+    document.getElementById('scan-paper-btn').addEventListener('click', function () {
+        const overlay = document.getElementById('loading-overlay');
+        overlay.style.display = 'block'; // Show loading overlay
+
+        // Send an AJAX GET request to the scan_paper URL
+        fetch("{% url 'scan_paper' %}", {
+            method: 'GET',
+            headers: {
+                'x-requested-with': 'XMLHttpRequest',
             },
-            minLength: 1  // Start suggesting after typing 2 characters
+        })
+        .then(response => response.json())
+        .then(data => {
+            overlay.style.display = 'none'; // Hide loading overlay
+            if (data.status === 'success') {
+                alert('Scanning complete!');
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            overlay.style.display = 'none'; // Hide loading overlay
+            alert('An error occurred: ' + error.message);
         });
     });
-</script>
-<script>
-    document.getElementById('populate-form-btn').addEventListener('click', function() {
+
+    document.getElementById('populate-form-btn').addEventListener('click', function () {
         // Send an AJAX GET request to the borrower_form_view URL
         fetch("{% url 'borrower_form_view' %}", {
             method: 'GET',
@@ -129,7 +151,6 @@
         })
         .then(response => response.json())
         .then(data => {
-            // Populate the form fields with the received data
             document.getElementById('id_borrower_last_name').value = data.borrower_last_name || '';
             document.getElementById('id_borrower_first_name').value = data.borrower_first_name || '';
             document.getElementById('id_borrower_middle_name').value = data.borrower_middle_name || '';
