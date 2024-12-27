@@ -18,12 +18,14 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import BorrowedItemSerializer, InventoryItemSerializer
 from datetime import timedelta
 import platform
-import win32com.client
-import pythoncom
-import comtypes.client
-import comtypes
+if platform.system() == "Windows":
+    import win32com.client
+    import pythoncom
+    import comtypes.client
+    import comtypes
 import os
 from .models import InventoryItem
+from django.core.files.storage import FileSystemStorage
 
 
 @login_required
@@ -513,3 +515,28 @@ class BorrowedItemViewSet(viewsets.ReadOnlyModelViewSet):
     
     def get_queryset(self):
         return BorrowedItem.objects.filter(borrower_name=self.request.user.username)
+
+
+def scan_form(request):
+    if request.method == 'GET':
+        return render(request, 'scan.html')
+
+def upload_photo(request):
+    if request.method == 'POST' and request.FILES.get('photo'):
+        photo = request.FILES['photo']
+        fs = FileSystemStorage()
+        # Define a fixed filename
+        filename = "photo.jpg"
+        file_path = os.path.join(fs.location, filename)
+
+        # Check if the file already exists and delete it
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        # Save the new photo with the same name
+        fs.save(filename, photo)
+        file_url = fs.url(filename)
+        return JsonResponse({'file_url': file_url})
+    
+    return JsonResponse({'error': 'No photo uploaded'}, status=400)
+

@@ -1,6 +1,9 @@
 from django.urls import path, include
 from . import views
 from rest_framework.routers import DefaultRouter
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 router = DefaultRouter()
 router.register(r'inventory', views.InventoryViewSet, basename='inventory-api')
@@ -25,4 +28,13 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/borrow/', views.borrow_item_api, name='borrow-api'),
     path('api/return/<int:item_id>/', views.return_item_api, name='return-api'),
+
+    # Phone Scanning
+    path('scan/', views.scan_form, name='scan_form'),
+    path('upload-photo/', views.upload_photo, name='upload_photo'),
+    #static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

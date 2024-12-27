@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Form</title>
+</head>
+<body>
+    <button id="scanButton">Scan</button>
+    <div id="cameraContainer" style="display: none;">
+        <video id="video" width="640" height="480" autoplay></video>
+        <button id="captureButton">Capture</button>
+        <canvas id="canvas" style="display: none;"></canvas>
+    </div>
+    {% csrf_token %}
+	<script>
+		document.cookie = "csrftoken={{ csrf_token }}";
+    	const scanButton = document.getElementById('scanButton');
+    	const cameraContainer = document.getElementById('cameraContainer');
+    	const video = document.getElementById('video');
+    	const captureButton = document.getElementById('captureButton');
+    	const canvas = document.getElementById('canvas');
+    	const ctx = canvas.getContext('2d');
+	
+    	// Get the CSRF token from the Django template
+    	function getCSRFToken() {
+        	const cookies = document.cookie.split(';');
+        	for (let cookie of cookies) {
+            	const [key, value] = cookie.trim().split('=');
+            	if (key === 'csrftoken') {
+                	return value;
+            	}
+        	}
+        	return '';
+    	}
+	
+    	scanButton.addEventListener('click', () => {
+        	scanButton.style.display = 'none';
+        	cameraContainer.style.display = 'block';
+        	startCamera();
+    	});
+	
+    	captureButton.addEventListener('click', () => {
+        	capturePhoto();
+    	});
+	
+    	function startCamera() {
+        	const constraints = {
+            	video: {
+                	facingMode: "environment"
+            	}
+        	};
+	
+        	navigator.mediaDevices.getUserMedia(constraints)
+            	.then((stream) => {
+                	video.srcObject = stream;
+            	})
+            	.catch((err) => {
+                	alert('Error accessing camera: ' + err);
+            	});
+    	}
+	
+		function capturePhoto() {
+    		canvas.width = video.videoWidth;
+    		canvas.height = video.videoHeight;
+    		ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+		
+    		canvas.toBlob((blob) => {
+        		const formData = new FormData();
+        		formData.append('photo', blob); // No filename needed as backend handles it
+		
+        		const csrfToken = getCSRFToken();
+		
+        		fetch('/upload-photo/', {
+            		method: 'POST',
+            		headers: {
+                		'X-CSRFToken': csrfToken
+            		},
+            		body: formData,
+        		})
+        		.then(response => response.json())
+        		.then(data => {
+            		console.log('Photo uploaded successfully:', data.file_url);
+            		alert('Photo captured and uploaded successfully!');
+        		})
+        		.catch((error) => {
+            		console.error('Error uploading photo:', error);
+            		alert('Failed to upload photo.');
+        		});
+    		}, 'image/jpeg');
+		}
+
+	</script>
+
+    
+    
+</body>
+</html>
+
