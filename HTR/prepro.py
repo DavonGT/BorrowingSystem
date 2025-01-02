@@ -1,8 +1,9 @@
 import cv2
 import numpy as np
+import subprocess
 
 # Load the image
-image = cv2.imread('../media/captured_image.png')
+image = cv2.imread('media/captured_image.png')
 
 # Convert the image to grayscale
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -48,3 +49,6 @@ result[blue_mask > 0] = blue_only[blue_mask > 0]
 
 # Save and display the result
 cv2.imwrite('output.jpg', result)
+
+subprocess.run(['HTR/venv/bin/python', 'HTR/cOCR.py'])
+

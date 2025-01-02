@@ -20,8 +20,16 @@ Answer just like how the text is on the image.
 Separate each text with a space.
 """)["answer"]
 print("Answer:", answer)
-lines = answer.split(", ")
-file_name = "output.txt"
+lines = answer.split(",")
+file_name = "HTR/data/data.txt"
 with open(file_name, "w") as f:
     for line in lines:
         f.write(line + "\n")
+
+# Read all lines except the first
+with open(file_name, "r") as file:
+    lines = file.readlines()
+
+# Write the remaining lines back to the file
+with open(file_name, "w") as file:
+    file.writelines(lines[1:])
