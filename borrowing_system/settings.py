@@ -140,3 +140,9 @@ LOGIN_REDIRECT_URL = '/'
 # settings.py
 LOGIN_URL = '/login/'  # This should match your login URL
 
+# Maximum size (in bytes) for file uploads
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB (adjust as needed)
+
+# Max size of files in Django forms (this can be higher or lower)
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB (adjust as needed)
+

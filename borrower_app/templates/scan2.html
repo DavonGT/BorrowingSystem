@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            margin: 20px 0;
+            font-size: 1.5em;
+            text-align: center;
+            color: #0056b3;
+        }
+
+        #cameraSelect {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        video {
+            width: 90%;
+            max-width: 400px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        canvas {
+            display: none;
+            width: 90%;
+            max-width: 400px;
+            margin: 10px 0;
+            border: 2px solid #333;
+            border-radius: 10px;
+        }
+
+        form {
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        button {
+            width: 90%;
+            max-width: 400px;
+            padding: 10px 20px;
+            margin: 5px 0;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #0056b3;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #004090;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Capture Image</h1>
+    <select id="cameraSelect"></select>
+    <video id="video" autoplay></video>
+    <canvas id="canvas"></canvas>
+    <form id="imageForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="image_data" id="imageData">
+        <button type="button" id="flashToggle">Toggle Flash</button>
+        <button type="button" id="captureButton">Capture Image</button>
+        <button type="submit">Upload Image</button>
+    </form>
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const cameraSelect = document.getElementById('cameraSelect');
+        const captureButton = document.getElementById('captureButton');
+        const flashToggle = document.getElementById('flashToggle');
+        const imageDataInput = document.getElementById('imageData');
+        let currentStream = null;
+        let currentTrack = null;
+        let flashOn = false;
+
+        // List cameras and populate dropdown
+        async function listCameras() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                cameraSelect.innerHTML = ''; // Clear existing options
+                videoDevices.forEach((device, index) => {
+                    const option = document.createElement('option');
+                    option.value = device.deviceId;
+                    option.textContent = device.label || `Camera ${index + 1}`;
+                    cameraSelect.appendChild(option);
+                });
+            } catch (err) {
+                console.error("Error listing cameras: ", err);
+            }
+        }
+
+        // Start camera with the selected device ID and high resolution
+        async function startCamera(deviceId) {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        deviceId: { exact: deviceId },
+                        width: { ideal: 1920 },  // Maximize resolution (Full HD)
+                        height: { ideal: 1080 },
+                    }
+                });
+
+                video.srcObject = currentStream;
+                currentTrack = currentStream.getVideoTracks()[0];
+
+                // Dynamically set the canvas resolution based on the video feed
+                canvas.width = 1080;
+                canvas.height = 1920;
+
+                // Set canvas to smooth for better quality
+                const context = canvas.getContext('2d');
+                context.imageSmoothingEnabled = true;
+                context.imageSmoothingQuality = 'high';
+            } catch (err) {
+                console.error("Error starting camera: ", err);
+            }
+        }
+
+        // Toggle Flash
+        flashToggle.addEventListener('click', async () => {
+            if (!currentTrack) return;
+            try {
+                const capabilities = currentTrack.getCapabilities();
+                if (!capabilities.torch) {
+                    alert("Flash not supported on this device.");
+                    return;
+                }
+
+                flashOn = !flashOn;
+                await currentTrack.applyConstraints({
+                    advanced: [{ torch: flashOn }]
+                });
+            } catch (err) {
+                console.error("Error toggling flash: ", err);
+            }
+        });
+
+        // Capture Image
+        captureButton.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            // Draw the video frame on canvas, preserving high resolution
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Apply CSS filter for enhanced color
+            context.filter = 'contrast(1.5) saturate(1.8)'; // Boost contrast and saturation
+            context.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+
+            // Get the enhanced image data
+            imageDataInput.value = canvas.toDataURL('image/png', 1.0); // Full quality PNG
+        });
+
+        // Camera selection
+        cameraSelect.addEventListener('change', () => {
+            const selectedDeviceId = cameraSelect.value;
+            startCamera(selectedDeviceId);
+        });
+
+        // Initialize cameras on page load
+        listCameras().then(() => {
+            if (cameraSelect.options.length > 0) {
+                startCamera(cameraSelect.options[0].value);
+            }
+        });
+    </script>
+</body>
+</html>
+

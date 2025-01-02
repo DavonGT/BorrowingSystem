@@ -540,3 +540,32 @@ def upload_photo(request):
     
     return JsonResponse({'error': 'No photo uploaded'}, status=400)
 
+
+
+
+from django.shortcuts import render
+from django.http import JsonResponse
+import base64
+from django.core.files.base import ContentFile
+from django.conf import settings
+import os
+
+def capture_image(request):
+    if request.method == 'POST':
+        image_data = request.POST.get('image_data')
+        if image_data:
+            # Decode base64 image
+            format, imgstr = image_data.split(';base64,')
+            ext = format.split('/')[-1]
+            image = ContentFile(base64.b64decode(imgstr), name=f"captured_image.{ext}")
+
+            # Save the image locally
+            image_path = os.path.join(settings.MEDIA_ROOT, image.name)
+            with open(image_path, 'wb') as f:
+                f.write(image.read())
+
+            return JsonResponse({'message': 'Image uploaded successfully', 'image_url': f"{settings.MEDIA_URL}{image.name}"})
+        return JsonResponse({'error': 'No image data provided'}, status=400)
+
+    return render(request, 'scan2.html')
+
