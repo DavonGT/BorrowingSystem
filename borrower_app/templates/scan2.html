@@ -132,16 +132,28 @@
                     video: {
                         width: { ideal: 1920 },  // Maximize resolution (Full HD)
                         height: { ideal: 1080 },
+                        facingMode: { ideal: "environment" }  // Use the back camera
                     }
                 };
 
                 if (!deviceId) {
                     const devices = await navigator.mediaDevices.enumerateDevices();
                     const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                    const backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear'));
+                    let backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear'));
+
+                    // If no back camera is found by label, try to select the last video device
+                    if (!backCamera && videoDevices.length > 1) {
+                        backCamera = videoDevices[videoDevices.length - 1];
+                    }
+
                     if (backCamera) {
                         deviceId = backCamera.deviceId;
+                    } else if (videoDevices.length > 0) {
+                        // Fallback to the first video device if no back camera is found
+                        deviceId = videoDevices[0].deviceId;
                     }
+
+                    console.log("Selected device ID: ", deviceId);
                 }
 
                 if (deviceId) {

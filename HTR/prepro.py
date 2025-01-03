@@ -50,5 +50,25 @@ result[blue_mask > 0] = blue_only[blue_mask > 0]
 # Save and display the result
 cv2.imwrite('output.jpg', result)
 
-subprocess.run(['HTR/venv/bin/python', 'HTR/cOCR.py'])
+
+import subprocess
+import os
+
+# Run the other Python script in a different virtual environment
+def run_in_venv(venv_path, script_path):
+    # Path to the Python executable in the other virtual environment
+    python_exec = os.path.join(venv_path, 'bin', 'python')  # For Linux/macOS
+    # python_exec = os.path.join(venv_path, 'Scripts', 'python.exe')  # For Windows
+
+    subprocess.run([python_exec, script_path])
+
+# Assuming the relative paths
+venv_path = './HTR/venv'
+script_path = './HTR/cOCR.py'
+
+run_in_venv(venv_path, script_path)
+
+
+
+#subprocess.run(['HTR/venv/bin/python', 'HTR/cOCR.py'])
 
