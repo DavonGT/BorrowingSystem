@@ -128,14 +128,27 @@
             }
 
             try {
-                currentStream = await navigator.mediaDevices.getUserMedia({
+                const constraints = {
                     video: {
-                        deviceId: { exact: deviceId },
                         width: { ideal: 1920 },  // Maximize resolution (Full HD)
                         height: { ideal: 1080 },
                     }
-                });
+                };
 
+                if (!deviceId) {
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                    const backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear'));
+                    if (backCamera) {
+                        deviceId = backCamera.deviceId;
+                    }
+                }
+
+                if (deviceId) {
+                    constraints.video.deviceId = { exact: deviceId };
+                }
+
+                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
                 video.srcObject = currentStream;
                 currentTrack = currentStream.getVideoTracks()[0];
 
