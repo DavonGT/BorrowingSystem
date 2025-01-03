@@ -349,7 +349,12 @@ def borrower_form_view(request):
 
 def get_borrower_data():
     file_path = "HTR/data/data.txt"
-    txt_data = read_txt_file(file_path)
+    txt_data: str = read_txt_file(file_path)
+    for word in txt_data:
+        if word == '':
+            txt_data.remove(word)
+    if len(txt_data) > 5:
+        txt_data = txt_data[0:]
     print(txt_data)
 
     if txt_data:
@@ -357,15 +362,33 @@ def get_borrower_data():
         first_name = txt_data[1].title()
         middle_name = txt_data[2].title()
         item_name = txt_data[3].title()
+        item_quantity = txt_data[4]
+        if len(txt_data) > 5:
+            first_name = (txt_data[1] + ' ' + txt_data[2]).title()
+            middle_name = txt_data[3].title()
+            item_name = txt_data[4].title()
+            item_quantity = txt_data[5]
+            try:
+                item_quantity = int(item_quantity)
+            except ValueError:
+                item_quantity = 0
+        item_quantity = int(item_quantity) if len(txt_data) > 4 else 0
         if item_name is None:
             item_name = ''
-        item_quantity =int(txt_data[4])
+        if type(item_quantity) == str:
+            item_quantity = 0
         if item_quantity is None:
             item_quantity = 0
         
         # Fetch the available quantity from the inventory
-        inventory_item = get_object_or_404(InventoryItem, name=item_name)
-        available_quantity = inventory_item.quantity
+        try:
+            inventory_item = InventoryItem.objects.get(item_name=item_name)
+            available_quantity = inventory_item.available_quantity()
+            if item_quantity > available_quantity:
+                item_quantity = available_quantity
+        except InventoryItem.DoesNotExist:
+            inventory_item = InventoryItem(item_name="None")
+            available_quantity = 0
 
         # Validate the item_quantity
         if item_quantity > available_quantity:
@@ -494,4 +517,41 @@ def upload_photo(request):
         return JsonResponse({'file_url': file_url})
     
     return JsonResponse({'error': 'No photo uploaded'}, status=400)
+
+
+
+
+from django.shortcuts import render
+from django.http import JsonResponse
+import base64
+from django.core.files.base import ContentFile
+from django.conf import settings
+import os
+import sys
+import subprocess
+
+def capture_image(request):
+    if request.method == 'POST':
+        image_data = request.POST.get('image_data')
+        if image_data:
+            # Decode base64 image
+            format, imgstr = image_data.split(';base64,')
+            ext = format.split('/')[-1]
+            image = ContentFile(base64.b64decode(imgstr), name=f"captured_image.{ext}")
+
+            # Save the image locally
+            image_path = os.path.join(settings.MEDIA_ROOT, image.name)
+            with open(image_path, 'wb') as f:
+                f.write(image.read())
+
+                # Path to the script you want to run
+                script_path = "HTR/prepro.py"
+                subprocess.run(["python", script_path])
+                return redirect('home')
+
+
+            return JsonResponse({'message': 'Image uploaded successfully', 'image_url': f"{settings.MEDIA_URL}{image.name}"})
+        return JsonResponse({'error': 'No image data provided'}, status=400)
+
+    return render(request, 'scan2.html')
 

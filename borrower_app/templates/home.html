@@ -1,6 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+a.phone-scan {
+    display: inline-block;
+    font-weight: 400;
+    color: #fff;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+a.phone-scan:hover {
+    color: #fff;
+    background-color: #0056b3;
+    border-color: #0056b3;
+    text-decoration: none;
+}
+</style>
 <div class="container mt-4">
     {% load static %}
     <h2 class="home-header">Borrower's Dashboard</h2>
@@ -17,6 +41,7 @@
                 <button type="button" class="scan-btn" id="scan-paper-btn">Scan Paper</button>
                 <a href="{% url 'scan_form' %}" class="scan-cam">Scan by Photo</a>
                 <button type="button" class="submit-btn mb-3" id="populate-form-btn" data-bs-toggle="modal" data-bs-target="#addBorrowModal">Submit</button>
+                <a href={% url 'capture_image' %} class="phone-scan" id="phone-scan-btn">Phone Scan</a>
             </div>
         </div>
 

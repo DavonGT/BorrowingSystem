@@ -33,7 +33,7 @@ urlpatterns = [
     path('scan/', views.scan_form, name='scan_form'),
     path('upload-photo/', views.upload_photo, name='upload_photo'),
     #static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-
+    path('capture-image/', views.capture_image, name='capture_image'),
 ]
 
 if settings.DEBUG:

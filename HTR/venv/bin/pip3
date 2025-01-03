@@ -1,4 +1,4 @@
-#!/root/BorrowingSystem/HTR/OCRvenv/bin/python3.12
+#!/root/BorrowingSystem/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
