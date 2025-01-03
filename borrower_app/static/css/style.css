@@ -518,6 +518,7 @@ button.submit-btn {
     border-radius: 4px;
     margin: 10px 10px;
     color: white;
+    margin-bottom: 14px !important;
 
 }
 
@@ -525,6 +526,8 @@ button.submit-btn {
 /* Different colors for each button */
 button.scan-btn {
     background-color: #007bff;
+    margin-bottom: 15px;
+    margin-left: 1px;
 }
 
 button.scan-btn:hover {
@@ -561,6 +564,35 @@ button.add-btn {
 .add-btn:hover {
     background-color: #218838;
 }
+
+
+.scan-cam {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding: 12px 20px;
+
+    font-size: 16px;
+    font-weight: 500;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+
+.scan-cam:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+
+
+
+
 
 /* Input Field Styling */
 

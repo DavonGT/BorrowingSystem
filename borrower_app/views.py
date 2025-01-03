@@ -219,51 +219,6 @@ def get_item_names(request):
     items = InventoryItem.objects.values_list('item_name', flat=True)
     return JsonResponse(list(items), safe=False)
 
-# @csrf_exempt
-# def scan_paper(request):
-#     image_path = 'HTR/scannedImages/scanned_form.png'
-#     with open(image_path, 'wb') as f:
-#         is_scan = subprocess.run('scanimage --format=png --mode Color --resolution 600', stdout=f, shell=True)
-#         if is_scan.returncode != 0:
-#             # Cropping the scanned image
-#             image = cv2.imread(image_path)
-#             h, w, _ = image.shape
-#             image = image[:h // 2, :w//2]
-#             cv2.imwrite(image_path, image)
-
-#             # Doing now the actual scanning
-#             scan = subprocess.run(f'python3 HTR/ocr.py {image_path}', shell=True)
-#             if scan.returncode == 0:
-#                 return HttpResponse('Scanned')
-#             else:
-#                 return HttpResponse('Not Scanned')
-    
-#     return HttpResponse('Scan Complete.')
-
-
-# @csrf_exempt
-# def scan_paper(request):
-#     image_path = 'HTR/scannedImages/scanned_form.png'
-#     with open(image_path, 'wb') as f:
-#         is_scan = subprocess.run('scanimage --format=png --mode Color --resolution 600', stdout=f, shell=True)
-#         if is_scan.returncode != 0:
-#             # Cropping the scanned image
-#             image = cv2.imread(image_path)
-#             h, w, _ = image.shape
-#             image = image[:h // 2, :w // 2]
-#             cv2.imwrite(image_path, image)
-
-#             # Doing now the actual scanning
-#             scan = subprocess.run(f'python3 HTR/ocr.py {image_path}', shell=True)
-#             if scan.returncode == 0:
-#                 return JsonResponse({'status': 'success', 'message': 'Scanning complete'})
-#             else:
-#                 return JsonResponse({'status': 'error', 'message': 'Scanning failed'})
-
-#     return JsonResponse({'status': 'complete', 'message': 'Scanning complete'})
-
-
-
 
 
 
