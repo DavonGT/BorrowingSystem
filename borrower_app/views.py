@@ -521,37 +521,42 @@ def upload_photo(request):
 
 
 
-from django.shortcuts import render
-from django.http import JsonResponse
+import os
 import base64
 from django.core.files.base import ContentFile
 from django.conf import settings
-import os
-import sys
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
 import subprocess
 
 def capture_image(request):
     if request.method == 'POST':
         image_data = request.POST.get('image_data')
         if image_data:
-            # Decode base64 image
-            format, imgstr = image_data.split(';base64,')
-            ext = format.split('/')[-1]
-            image = ContentFile(base64.b64decode(imgstr), name=f"captured_image.{ext}")
+            try:
+                # Decode base64 image
+                format, imgstr = image_data.split(';base64,')
+                ext = format.split('/')[-1]
+                image = ContentFile(base64.b64decode(imgstr), name=f"captured_image.{ext}")
 
-            # Save the image locally
-            image_path = os.path.join(settings.MEDIA_ROOT, image.name)
-            with open(image_path, 'wb') as f:
-                f.write(image.read())
+                # Ensure MEDIA_ROOT exists
+                os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
 
-                # Path to the script you want to run
-                script_path = "HTR/prepro.py"
-                subprocess.run(["python", script_path])
-                return redirect('home')
+                # Save the image locally
+                image_path = os.path.join(settings.MEDIA_ROOT, image.name)
+                with open(image_path, 'wb') as f:
+                    f.write(image.read())
 
+                # Run the external script
+                script_path = os.path.join(settings.BASE_DIR, "HTR/prepro.py")
+                subprocess.run(["python", script_path], check=True)
 
-            return JsonResponse({'message': 'Image uploaded successfully', 'image_url': f"{settings.MEDIA_URL}{image.name}"})
+                return JsonResponse({'message': 'Image uploaded successfully', 'image_url': f"{settings.MEDIA_URL}{image.name}"})
+            except Exception as e:
+                return JsonResponse({'error': str(e)}, status=500)
+
         return JsonResponse({'error': 'No image data provided'}, status=400)
 
     return render(request, 'scan2.html')
+
 
